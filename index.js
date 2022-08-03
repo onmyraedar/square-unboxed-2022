@@ -17,6 +17,12 @@ app.get("/message", (req, res) => {
     return res.json("Don't have a good day, have a great day.");
 });
 
+app.post("/webhook", (req, res) => {
+    const event = req.body;
+    console.log(event);
+    res.sendStatus(200);
+});
+
 // Send back index.html for any request
 // that does not match the above
 app.get("*", (req, res) => {
