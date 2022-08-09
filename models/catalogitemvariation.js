@@ -8,11 +8,6 @@ const CatalogItemVariationSchema = new Schema({
     recipe: [{
         ingredient: { type: Schema.Types.ObjectId, ref: "InventoryItem" },
         quantity: { type: Schema.Types.Decimal128, default: 0 }
-    }],
-    modifiers: [{
-        catalog_object_id: { type: String, required: true },
-        ingredient: { type: Schema.Types.ObjectId, ref: "InventoryItem" },
-        quantity: { type: Schema.Types.Decimal128, default: 0 }
     }]
 })
 
