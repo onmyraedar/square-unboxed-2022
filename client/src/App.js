@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
 
 function App() {
   const [message, setMessage] = useState("No message yet");
@@ -68,6 +70,10 @@ function App() {
     }    
   }
 
+  const catalogItemOptions = catalog.items.map(
+    (item) => ({ label: item.itemData.name, catalogObjectID: item.id })
+  )
+
   return (
     <div className="App">
       <button onClick={getMessage}>Get Message</button>
@@ -78,6 +84,13 @@ function App() {
       {catalog.items.map((item) => (
         <p>{item.itemData.name}</p>
       ))}
+      <Autocomplete 
+        autoHighlight
+        disablePortal
+        id="catalog-item-autocomplete"
+        options={catalogItemOptions.sort((a, b) => a.label.localeCompare(b.label, "en", {ignorePunctuation: true}))}
+        renderInput={(params) => <TextField {...params} label="Choose a catalog item" />}
+      />
       {catalog.modifierLists.map((modifierList) => (
         <p>{modifierList.modifierListData.name}</p>
       ))}
