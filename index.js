@@ -46,6 +46,15 @@ app.get("/catalog/import", async (req, res) => {
     return res.json(catalogObjects.map((catalogObject) => toObject(catalogObject)));
 });
 
+app.get("/inventory/import", (req, res) => {
+    InventoryItem.find()
+        .sort([["name", "ascending"]])
+        .exec(function (error, list_items) {
+            if (error) { return next(error); }
+            return res.json(list_items);
+        })
+});
+
 app.post("/inventoryitem/create", (req, res) => {
     console.log("Logging works");
     const inventoryItem = new InventoryItem(
