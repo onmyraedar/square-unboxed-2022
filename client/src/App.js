@@ -6,7 +6,6 @@ import TextField from "@mui/material/TextField";
 import uniqid from "uniqid";
 
 function App() {
-  const [message, setMessage] = useState("No message yet");
   const [data, setData] = useState("No data yet");
   const [catalog, setCatalog] = useState({
     items: [],
@@ -18,17 +17,6 @@ function App() {
     variations: [],
   });
   const [inventory, setInventory] = useState([]);
-
-  // Testing a GET request
-  async function getMessage() {
-    try {
-      const response = await fetch("/message");
-      const messageData = await response.json();
-      setMessage(messageData);
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
   // Testing a POST request
   async function addInventoryItem() {
@@ -73,7 +61,7 @@ function App() {
         items: catalogItems,
         modifierLists: catalogModifierLists,
       });
-      console.log("This statement is reached.");
+      console.log("Catalog has been imported!");
     } catch (error) {
       console.log(error);
     }    
@@ -91,9 +79,11 @@ function App() {
   }
 
   function handleCatalogItemChange(event, value) {
-    console.log(value.catalogObjectID);
+    console.log(value.label);
     const item = catalog.items.find((item) => item.id === value.catalogObjectID);
     const variations = item.itemData.variations;
+    
+    // Create a new object with blank recipe for each item variation
     const activeCatalogItemVariations = [];
     for (const variation of variations) {
       activeCatalogItemVariations.push({
@@ -102,6 +92,7 @@ function App() {
         recipe: [],
       });
     }
+
     setActiveCatalogItem((activeCatalogItem) => {
       return {
         ...activeCatalogItem,
@@ -110,22 +101,15 @@ function App() {
         variations: activeCatalogItemVariations,
       }
     });
-    console.log(activeCatalogItem);
-  }
+
+  }  
 
   function handleInventoryItemChange(event, value) {
-    console.log(event.target.id);
+
     const parsedID = event.target.id.split("-");
     const activeVariationID = parsedID[0];
     const activeIngredientID = parsedID[1];
-    const activeVariation = activeCatalogItem.variations.find(
-      (variation) => variation.catalogObjectID === activeVariationID
-    );
-    console.log(activeVariation);
-    const activeIngredient = activeVariation.recipe.find(
-      (ingredient) => ingredient.ingredientID === activeIngredientID
-    );
-    console.log(activeIngredient);
+
     const updatedVariations = activeCatalogItem.variations.map(
       (variation) => {
         if (variation.catalogObjectID === activeVariationID) {
@@ -142,6 +126,7 @@ function App() {
         }
       }
     );
+
     setActiveCatalogItem((activeCatalogItem) => {
       return {
         ...activeCatalogItem,
@@ -151,18 +136,11 @@ function App() {
   }
 
   function handleQuantityChange(event, value) {
-    console.log(event.target.id);
+
     const parsedID = event.target.id.split("-");
     const activeVariationID = parsedID[0];
     const activeIngredientID = parsedID[1];
-    const activeVariation = activeCatalogItem.variations.find(
-      (variation) => variation.catalogObjectID === activeVariationID
-    );
-    console.log(activeVariation);
-    const activeIngredient = activeVariation.recipe.find(
-      (ingredient) => ingredient.ingredientID === activeIngredientID
-    );
-    console.log(activeIngredient);
+
     const updatedVariations = activeCatalogItem.variations.map(
       (variation) => {
         if (variation.catalogObjectID === activeVariationID) {
@@ -179,6 +157,7 @@ function App() {
         }
       }
     );
+
     setActiveCatalogItem((activeCatalogItem) => {
       return {
         ...activeCatalogItem,
@@ -188,20 +167,18 @@ function App() {
   }
 
   function handleAddIngredientClick(event) {
-    const activeVariation = activeCatalogItem.variations.find(
-      (variation) => variation.catalogObjectID === event.target.value
-    );
-    console.log(activeVariation.name);
+
+    const activeVariationID = event.target.value;
+
     const updatedVariations = activeCatalogItem.variations.map(
       (variation) => {
-        if (variation.catalogObjectID === event.target.value) {
-          const updatedRecipe = [...variation.recipe];
-          updatedRecipe.push({
+        if (variation.catalogObjectID === activeVariationID) {
+          const updatedRecipe = [...variation.recipe, {
             ingredientID: uniqid(),
             inventoryItemID: "PlaceholderID",
             name: "Placeholder",
-            quantity: 0,
-          });
+            quantity: 0,            
+          }];
           console.log(updatedRecipe);
           return {...variation, recipe: updatedRecipe};
         } else {
@@ -209,6 +186,7 @@ function App() {
         }
       }
     );
+
     setActiveCatalogItem((activeCatalogItem) => {
       return {
         ...activeCatalogItem,
@@ -226,11 +204,9 @@ function App() {
 
   return (
     <div className="App">
-      <button onClick={getMessage}>Get Message</button>
       <button onClick={addInventoryItem}>Add Item</button>
       <button onClick={importCatalog}>Import Catalog</button>
       <button onClick={importInventory}>Import Inventory</button>
-      <p>{message}</p>
       <p>{data}</p>
       <Autocomplete 
         autoHighlight
