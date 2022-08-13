@@ -56,7 +56,7 @@ function App() {
           <Routes>
             <Route path="/recipe/create" element={<CreateRecipeForm catalog={catalog} inventory={inventory} />} />
             <Route path="/inventory/create" element={<CreateInventoryItemForm />} />
-            <Route path="/inventory/list" element={<InventoryList />} />
+            <Route path="/inventory/list" element={<InventoryList inventory={inventory}/>} />
           </Routes>
         </div>
       </div>
