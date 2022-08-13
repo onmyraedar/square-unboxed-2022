@@ -1,0 +1,35 @@
+.navbar {
+  display: flex;
+  flex-direction: column;
+  border-style: solid;
+  border-color: #E7EBF0;
+  border-top-width: 0;
+  padding: 15px;
+}
+
+.navbar-section-header {
+  font-weight: bold;
+}
+
+.link-container {
+  border-radius: 8px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+  padding-right: 50px;
+}
+
+.link-container:hover {
+  background-color: #e3f2fd;
+}
+
+.active-link {
+  color: #1e88e5;
+  font-weight: bold;
+}
+
+a {
+  color: black;
+  text-decoration: none;
+}
+

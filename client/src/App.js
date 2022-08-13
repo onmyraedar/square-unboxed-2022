@@ -1,44 +1,18 @@
 import React, { useState } from "react";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+import CreateInventoryItemForm from "./components/CreateInventoryItemForm";
 import CreateRecipeForm from "./components/CreateRecipeForm";
 import Header from "./components/Header";
+import InventoryList from "./components/InventoryList";
+import Navbar from "./components/Navbar";
+import "./App.css";
 
 function App() {
-  const [data, setData] = useState("No data yet");
   const [catalog, setCatalog] = useState({
     items: [],
     modifierLists: [],
   });
   const [inventory, setInventory] = useState([]);
-
-  // Testing a POST request
-  async function addInventoryItem() {
-    console.log("Initializing inventory item...");
-    const inventoryItem = {
-      name: "Ice Cream",
-      quantity_in_stock: 100,
-      unit: {
-        singular: "ounce",
-        plural: "ounces"
-      }
-    }
-    console.log("Inventory item initialized!");
-    console.log(inventoryItem);
-    try {
-      const response = await fetch("/inventoryitem/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(inventoryItem)
-      });
-      setData("Post request successful!");
-      console.log("Request successful!");
-    } catch (error) {
-      console.log(error);
-    }
-    console.log("End of function.");
-  }
 
   async function importCatalog() {
     try {
@@ -74,14 +48,18 @@ function App() {
   return (
     <div className="App">
       <Header />
-      <button onClick={addInventoryItem}>Add Item</button>
-      <button onClick={importCatalog}>Import Catalog</button>
-      <button onClick={importInventory}>Import Inventory</button>
-      <p>{data}</p>
-      <Link to="/recipe/create">Create Recipe</Link>
-      <Routes>
-        <Route path="/recipe/create" element={<CreateRecipeForm catalog={catalog} inventory={inventory} />} />
-      </Routes>
+      <div className="App-container">
+        <Navbar />
+        <div className="App-content">
+          <button onClick={importCatalog}>Import Catalog</button>
+          <button onClick={importInventory}>Import Inventory</button>
+          <Routes>
+            <Route path="/recipe/create" element={<CreateRecipeForm catalog={catalog} inventory={inventory} />} />
+            <Route path="/inventory/create" element={<CreateInventoryItemForm />} />
+            <Route path="/inventory/list" element={<InventoryList />} />
+          </Routes>
+        </div>
+      </div>
     </div>
   );
 }
