@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import CreateRecipeForm from "./components/CreateRecipeForm";
+import Header from "./components/Header";
 
 function App() {
   const [data, setData] = useState("No data yet");
@@ -72,6 +73,7 @@ function App() {
 
   return (
     <div className="App">
+      <Header />
       <button onClick={addInventoryItem}>Add Item</button>
       <button onClick={importCatalog}>Import Catalog</button>
       <button onClick={importInventory}>Import Inventory</button>
