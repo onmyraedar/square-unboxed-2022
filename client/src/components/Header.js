@@ -5,7 +5,7 @@ function Header() {
   return(
     <header>
       <div className="header">
-        <p>Bento</p>
+        <img className="header-logo" src={require("../assets/bento-logo-cropped.png")} alt="Bento Logo" />
       </div>
     </header>
   );

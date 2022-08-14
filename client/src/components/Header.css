@@ -1,4 +1,13 @@
 .header {
+  background-color: #33355a;
   border-style: solid;
   border-color: #E7EBF0;
+  border-top-width: 0px;
+  border-left-width: 0px;
+  border-right-width: 0px;
+  text-align: center;
+}
+
+.header-logo {
+  height: 52px;
 }
