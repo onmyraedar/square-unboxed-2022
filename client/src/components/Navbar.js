@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import "./Navbar.css";
 
 function Navbar() {
@@ -17,19 +17,39 @@ function Navbar() {
   return(
     <div className="navbar">
       <div className="link-container">
-        <Link to="/">Get started</Link>
+        <NavLink
+          className={(navData) => (navData.isActive ? "active" : "link")}
+          to="/"
+        >
+          Get started
+        </NavLink>  
       </div>
-      <p className="navbar-section-header">Inventory</p>
+      <p className="navbar-section-header">Inventory</p>  
       <div className="link-container">
-        <Link to="/inventory/create">Create item</Link>
+        <NavLink
+          className={(navData) => (navData.isActive ? "active" : "link")}
+          to="/inventory/create"
+        >
+          Create item
+        </NavLink>
       </div>
       <div className="link-container">
-        <Link to="/inventory/list">View items</Link>
+        <NavLink
+          className={(navData) => (navData.isActive ? "active" : "link")}
+          to="/inventory/list"
+        >
+          View items
+        </NavLink>
       </div>
       <p className="navbar-section-header">Recipes</p>
       <div className="link-container">
-        <Link to="/recipe/create">Create recipe</Link>
-      </div>
+        <NavLink
+            className={(navData) => (navData.isActive ? "active" : "link")}
+            to="/recipe/create"
+          >
+            Create recipe
+          </NavLink>
+        </div>
     </div>
   )
 }

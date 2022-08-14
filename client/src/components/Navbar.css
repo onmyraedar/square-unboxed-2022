@@ -1,6 +1,8 @@
 .navbar {
   display: flex;
   flex-direction: column;
+  min-width: 15vw;
+  flex-shrink: 0;
   border-style: solid;
   border-color: #E7EBF0;
   border-top-width: 0;
@@ -23,13 +25,16 @@
   background-color: #e3f2fd;
 }
 
-.active-link {
-  color: #1e88e5;
-  font-weight: bold;
-}
-
 a {
   color: black;
   text-decoration: none;
 }
 
+a:hover {
+  cursor: pointer;
+}
+
+.active {
+  color: #2196f3;
+  font-weight: 700;
+}
