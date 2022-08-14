@@ -1,22 +1,14 @@
-import React, { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import React from "react";
+import { NavLink } from "react-router-dom";
+import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
+import Divider from '@mui/material/Divider';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import "./Navbar.css";
 
 function Navbar() {
-  const [activeLinkID, setActiveLinkID] = useState("home-link");
-
-  function isActive(ID) {
-    console.log(ID);
-    return ID === activeLinkID;
-  }
-
-  function updateActiveLink(event) {
-    setActiveLinkID(event.target.id);
-  }
-
   return(
     <div className="navbar">
-      <div className="link-container">
+      <div className="header-navlink-container">
         <NavLink
           className={(navData) => (navData.isActive ? "active" : "link")}
           to="/"
@@ -25,28 +17,31 @@ function Navbar() {
         </NavLink>  
       </div>
       <p className="navbar-section-header">Inventory</p>  
-      <div className="link-container">
+      <div className="navlink-container">
         <NavLink
           className={(navData) => (navData.isActive ? "active" : "link")}
           to="/inventory/create"
         >
+          <AddBoxRoundedIcon className="navbar-icon" fontSize="small"/>
           Create item
         </NavLink>
       </div>
-      <div className="link-container">
+      <div className="navlink-container">
         <NavLink
           className={(navData) => (navData.isActive ? "active" : "link")}
           to="/inventory/list"
         >
+          <SearchRoundedIcon className="navbar-icon" fontSize="small"/>
           View items
         </NavLink>
       </div>
       <p className="navbar-section-header">Recipes</p>
-      <div className="link-container">
+      <div className="navlink-container">
         <NavLink
             className={(navData) => (navData.isActive ? "active" : "link")}
             to="/recipe/create"
           >
+            <AddBoxRoundedIcon className="navbar-icon" fontSize="small"/>
             Create recipe
           </NavLink>
         </div>
