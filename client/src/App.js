@@ -55,7 +55,7 @@ function App() {
           <button onClick={importInventory}>Import Inventory</button>
           <Routes>
             <Route path="/recipe/create" element={<CreateRecipeForm catalog={catalog} inventory={inventory} />} />
-            <Route path="/inventory/create" element={<CreateInventoryItemForm />} />
+            <Route path="/inventory/create" element={<CreateInventoryItemForm importInventory={importInventory}/>} />
             <Route path="/inventory/list" element={<InventoryList inventory={inventory}/>} />
           </Routes>
         </div>

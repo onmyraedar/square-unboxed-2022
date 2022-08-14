@@ -3,7 +3,9 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { useNavigate } from "react-router-dom";
 
-function CreateInventoryItemForm() {
+function CreateInventoryItemForm(props) {
+  const { importInventory } = props;
+
   const [inventoryItem, setInventoryItem] = useState({
     name: "",
     quantity_in_stock: 0,
@@ -35,6 +37,7 @@ function CreateInventoryItemForm() {
         body: JSON.stringify(inventoryItemData)
       });
       console.log("Request successful!");
+      importInventory();
       navigate("/inventory/list");
     } catch (error) {
       console.log(error);

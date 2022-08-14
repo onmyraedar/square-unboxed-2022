@@ -8,3 +8,9 @@
   flex: 1 1 auto;
   display: flex;
 }
+
+.App-content {
+  padding-top: 10px;
+  padding-left: 30px;
+  padding-right: 30px;
+}
