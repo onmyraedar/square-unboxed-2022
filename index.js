@@ -4,6 +4,8 @@ const express = require("express");
 const path = require("path");
 const { Client, Environment } = require("square");
 
+const catalogItemCreate = require("./utils/catalogItemCreate");
+const catalogItemVariationCreate = require("./utils/catalogItemVariationCreate");
 const listCatalog = require("./utils/listCatalog");
 const toObject = require("./utils/toObject");
 
@@ -56,8 +58,21 @@ app.get("/inventory/import", (req, res) => {
         })
 });
 
+app.post("/recipeset/create", (req, res) => {
+
+    const variations = [];
+    const variationdetails = req.body.variations;
+    for (const variationdetail of variationdetails) {
+        const variation = catalogItemVariationCreate(variationdetail);
+        variations.push(variation);
+    }
+
+    const catalogItem = catalogItemCreate(req.body, variations);
+    
+    return res.json("Recipe successfully saved");
+});
+
 app.post("/inventoryitem/create", (req, res) => {
-    console.log("Logging works");
     const inventoryItem = new InventoryItem(
         {
             name: req.body.name,
@@ -73,12 +88,10 @@ app.post("/inventoryitem/create", (req, res) => {
             console.log("There was no error! :)");
         }
         return res.json(inventoryItem);
-    })
+    });
 });
 
 app.get("/catalogitem/find/:catalogObjectID", (req, res) => {
-    console.log("we got to the backend!");
-    console.log(req.params.catalogObjectID);
     CatalogItem.findOne({
         catalog_object_id: req.params.catalogObjectID
     })

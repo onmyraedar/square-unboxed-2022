@@ -351,9 +351,26 @@ function CreateRecipeForm(props) {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   }
 
-  function handleSubmit() {
+  async function handleSubmit(event) {
+    event.preventDefault();
+    console.log(activeStep);
     console.log(activeCatalogItem);
     console.log("Submitted");
+    try {
+      const response = await fetch("/recipeset/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(activeCatalogItem)
+      });
+      console.log("Request successful!");
+      console.log(response);
+      //importInventory();
+      //navigate("/inventory/list");
+    } catch (error) {
+      console.log(error);
+    }   
   }
 
   return (
@@ -367,40 +384,44 @@ function CreateRecipeForm(props) {
         </Step>
       ))}
     </Stepper>  
-    { activeStep === 0 &&
-      <SelectCatalogItemStep 
-        activeCatalogItem={activeCatalogItem}
-        catalogItemOptions={catalogItemOptions}
-        handleCatalogItemChange={handleCatalogItemChange}
-      />
-    }
-    {
-      activeStep === 1 &&
-      <AddVariationRecipeStep 
-        activeCatalogItem={activeCatalogItem}
-        handleAddIngredient={handleAddIngredient}
-        handleInventoryItemChange={handleInventoryItemChange}
-        handleQuantityChange={handleQuantityChange}
-        inventory={inventory}
-        inventoryItemOptions={inventoryItemOptions}
-      />
-    }
-    {
-      activeStep === 2 && 
-      <AddModifierRecipeStep 
-        activeCatalogItem={activeCatalogItem}
-        handleAddModifierIngredient={handleAddModifierIngredient}
-        handleModifierInventoryItemChange={handleModifierInventoryItemChange}
-        handleModifierQuantityChange={handleModifierQuantityChange}
-        inventory={inventory}
-        inventoryItemOptions={inventoryItemOptions}
-      />
-    }
-    <Button onClick={handlePreviousStep} variant="contained">Back</Button>
-    {activeStep !== steps.length - 1
-      ? <Button onClick={handleNextStep} variant="contained">Next</Button>
-      : <Button onClick={handleSubmit} variant="contained">Submit</Button>
-    }
+    <form onSubmit={handleSubmit}>
+      { activeStep === 0 &&
+        <SelectCatalogItemStep 
+          activeCatalogItem={activeCatalogItem}
+          catalogItemOptions={catalogItemOptions}
+          handleCatalogItemChange={handleCatalogItemChange}
+        />
+      }
+      {
+        activeStep === 1 &&
+        <AddVariationRecipeStep 
+          activeCatalogItem={activeCatalogItem}
+          handleAddIngredient={handleAddIngredient}
+          handleInventoryItemChange={handleInventoryItemChange}
+          handleQuantityChange={handleQuantityChange}
+          inventory={inventory}
+          inventoryItemOptions={inventoryItemOptions}
+        />
+      }
+      {
+        activeStep === 2 && 
+        <AddModifierRecipeStep 
+          activeCatalogItem={activeCatalogItem}
+          handleAddModifierIngredient={handleAddModifierIngredient}
+          handleModifierInventoryItemChange={handleModifierInventoryItemChange}
+          handleModifierQuantityChange={handleModifierQuantityChange}
+          inventory={inventory}
+          inventoryItemOptions={inventoryItemOptions}
+        />
+      }
+      <Button onClick={handlePreviousStep} variant="contained">Back</Button>
+      {activeStep < steps.length - 1 && 
+        <Button onClick={handleNextStep} type="button" variant="contained">Next</Button>
+      }
+      {activeStep === steps.length - 1 &&
+        <Button type="submit" variant="contained">Submit</Button>
+      }
+    </form>
   </div>
   );
 }
