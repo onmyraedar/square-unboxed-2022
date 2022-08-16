@@ -55,6 +55,12 @@ function AddModifierRecipeStep(props) {
 
   return(
     <div>
+      {!activeCatalogItem.modifierLists.length && 
+        <div>
+          <p>This item has no modifiers.</p>
+          <p>Press <b>Submit</b> to save your variation recipes.</p>
+        </div>
+      }
       {activeCatalogItem.modifierLists.map((modifierList) => 
         <div>
           <b>{modifierList.name}</b>
