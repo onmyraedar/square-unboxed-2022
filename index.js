@@ -7,6 +7,7 @@ const { Client, Environment } = require("square");
 const listCatalog = require("./utils/listCatalog");
 const toObject = require("./utils/toObject");
 
+const CatalogItem = require("./models/catalogitem");
 const InventoryItem = require("./models/inventoryitem");
 
 const app = express();
@@ -72,7 +73,19 @@ app.post("/inventoryitem/create", (req, res) => {
             console.log("There was no error! :)");
         }
         return res.json(inventoryItem);
-        // res.redirect(path.join(__dirname + "/client/build/index.html"));
+    })
+});
+
+app.get("/catalogitem/find/:catalogObjectID", (req, res) => {
+    console.log("we got to the backend!");
+    console.log(req.params.catalogObjectID);
+    CatalogItem.findOne({
+        catalog_object_id: req.params.catalogObjectID
+    })
+    .exec(function (error, catalog_item) {
+        if (error) { return next(error); }
+        console.log(catalog_item);
+        return res.json(catalog_item);
     })
 });
 

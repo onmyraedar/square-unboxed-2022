@@ -7,6 +7,7 @@ const CatalogItemSchema = new Schema({
     name: { type: String, required: true },
     variations: [{ type: Schema.Types.ObjectId, ref: "CatalogItemVariation" }],
     modifier_lists: [{
+        catalog_object_id: { type: String },
         name: { type: String },
         modifiers: [{
             catalog_object_id: { type: String },
