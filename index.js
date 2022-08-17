@@ -10,6 +10,7 @@ const listCatalog = require("./utils/listCatalog");
 const toObject = require("./utils/toObject");
 
 const CatalogItem = require("./models/catalogitem");
+const CatalogItemVariation = require("./models/catalogitemvariation");
 const InventoryItem = require("./models/inventoryitem");
 
 const app = express();
@@ -70,6 +71,22 @@ app.post("/recipeset/create", (req, res) => {
     const catalogItem = catalogItemCreate(req.body, variations);
     
     return res.json("Recipe successfully saved");
+});
+
+app.post("/recipeset/update", async (req, res) => {
+    
+    const catalogItem = await CatalogItem.findById(req.body._id);
+    catalogItem.modifier_lists = req.body.modifier_lists;
+    await catalogItem.save();
+
+    for (const variation of req.body.variations) {
+        const catalogItemVariation = await CatalogItemVariation.findById(variation._id);
+        catalogItemVariation.recipe = variation.recipe;
+        await catalogItemVariation.save();
+    }
+
+    return res.json("Recipe updates successfully saved");
+
 });
 
 app.post("/inventoryitem/create", (req, res) => {
