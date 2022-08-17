@@ -12,6 +12,7 @@ const toObject = require("./utils/toObject");
 const CatalogItem = require("./models/catalogitem");
 const CatalogItemVariation = require("./models/catalogitemvariation");
 const InventoryItem = require("./models/inventoryitem");
+const Order = require("./models/order");
 
 const app = express();
 
@@ -144,7 +145,26 @@ app.get("/catalogitem/find/:catalogObjectID", (req, res) => {
 app.post("/webhook", (req, res) => {
     const event = req.body;
     console.log(event);
+
     res.sendStatus(200);
+
+    const order = new Order(
+        {
+            terminal_event_type: event.type,
+            terminal_event_id: event.event_id,
+        }
+    );
+
+    order.save(function (error) {
+        if (error) {
+            console.log("There was an error. :(");
+            return next(error);
+        } else {
+            console.log("There was no error! :)");
+        }
+        return;
+    });
+
 });
 
 // Send back index.html for any request
