@@ -91,6 +91,28 @@ app.post("/inventoryitem/create", (req, res) => {
     });
 });
 
+app.get("/catalogitem/all", (req, res) => {
+    CatalogItem.find()
+        .sort([["name", "ascending"]])
+        .exec(function (error, list_items) {
+            if (error) { return next(error); }
+            return res.json(list_items);
+        })
+});
+
+app.get("/catalogitem/findbyid/:itemID", (req, res, next) => {
+    CatalogItem.findById(req.params.itemID)
+    .populate({path: "variations",
+      populate: { path: "recipe.ingredient" }
+    })
+    .populate("modifier_lists.modifiers.recipe.ingredient")
+    .exec(function (error, catalog_item) {
+        if (error) { return next(error); }
+        console.log(catalog_item);
+        return res.json(catalog_item);
+    })
+});
+
 app.get("/catalogitem/find/:catalogObjectID", (req, res) => {
     CatalogItem.findOne({
         catalog_object_id: req.params.catalogObjectID

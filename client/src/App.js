@@ -5,6 +5,8 @@ import CreateRecipeForm from "./components/CreateRecipeForm";
 import Header from "./components/Header";
 import InventoryList from "./components/InventoryList";
 import Navbar from "./components/Navbar";
+import RecipeItem from "./components/RecipeItem";
+import RecipeItemList from "./components/RecipeItemList";
 import "./App.css";
 
 function App() {
@@ -55,6 +57,8 @@ function App() {
           <button onClick={importInventory}>Import Inventory</button>
           <Routes>
             <Route path="/recipe/create" element={<CreateRecipeForm catalog={catalog} inventory={inventory} />} />
+            <Route path="/recipe/list" element={<RecipeItemList />} />
+            <Route path="/recipe/:itemID" element={<RecipeItem />} />
             <Route path="/inventory/create" element={<CreateInventoryItemForm importInventory={importInventory}/>} />
             <Route path="/inventory/list" element={<InventoryList inventory={inventory}/>} />
           </Routes>

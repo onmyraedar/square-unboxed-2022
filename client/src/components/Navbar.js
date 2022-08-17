@@ -1,7 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
-import Divider from '@mui/material/Divider';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import "./Navbar.css";
 
@@ -43,8 +42,17 @@ function Navbar() {
           >
             <AddBoxRoundedIcon className="navbar-icon" fontSize="small"/>
             Create recipe
-          </NavLink>
-        </div>
+        </NavLink>      
+      </div>
+      <div className="navlink-container">
+        <NavLink
+            className={(navData) => (navData.isActive ? "active" : "link")}
+            to="/recipe/list"
+          >
+            <SearchRoundedIcon className="navbar-icon" fontSize="small"/>
+            View recipes
+        </NavLink>  
+      </div>
     </div>
   )
 }
