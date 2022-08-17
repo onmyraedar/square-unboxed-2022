@@ -58,10 +58,10 @@ function AddVariationRecipeStep(props) {
       <h1>{activeCatalogItem.name}</h1> 
       <h3>Variations</h3>
       {activeCatalogItem.variations.map((variation) => 
-        <div>
+        <div key={variation.catalogObjectID}>
           <p>{variation.name}</p>
           {variation.recipe.map((ingredient) => 
-            <div>
+            <div key={ingredient.ingredientID}>
               <Autocomplete 
                 autoHighlight
                 disablePortal

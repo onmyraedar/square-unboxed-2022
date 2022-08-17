@@ -19,7 +19,6 @@ function AddModifierRecipeStep(props) {
     const inventoryItem = inventoryItemOptions.find(
       (item) => item.inventoryItemID === inventoryItemID
     );
-    console.log(inventoryItemID);
     if (inventoryItem) {
       return inventoryItem;
     } else {
@@ -37,8 +36,6 @@ function AddModifierRecipeStep(props) {
     const activeIngredient = activeModifier.recipe.find(
       (ingredient) => ingredient.ingredientID === ingredientID
     );     
-    console.log("Modifier:");
-    console.log(activeIngredient);
     return activeIngredient.quantity;
   }  
 
@@ -55,6 +52,8 @@ function AddModifierRecipeStep(props) {
 
   return(
     <div>
+      <h1>{activeCatalogItem.name}</h1>
+      <h3>Modifiers</h3>
       {!activeCatalogItem.modifierLists.length && 
         <div>
           <p>This item has no modifiers.</p>
@@ -62,13 +61,13 @@ function AddModifierRecipeStep(props) {
         </div>
       }
       {activeCatalogItem.modifierLists.map((modifierList) => 
-        <div>
+        <div key={modifierList.catalogObjectID}>
           <b>{modifierList.name}</b>
           {modifierList.modifiers.map((modifier) => 
-            <div>
+            <div key={modifier.catalogObjectID}>
               <p>{modifier.name}</p>
               {modifier.recipe.map((ingredient) => 
-                  <div>
+                  <div key={ingredient.ingredientID}>
                     <Autocomplete 
                       autoHighlight
                       disablePortal

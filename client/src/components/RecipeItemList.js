@@ -26,7 +26,7 @@ function RecipeItemList() {
       <p>The items below already have recipes in the database.</p>
       <p>Click on an item to view and edit its recipes.</p>
       {recipeItems.map((item) => 
-        <div>
+        <div key={item._id}>
           <Card variant="outlined">
             <CardContent>
               <p>{item.name}</p>

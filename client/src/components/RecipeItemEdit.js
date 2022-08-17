@@ -20,7 +20,6 @@ function RecipeItemEdit(props) {
       try {
         const response = await fetch(`/catalogitem/findbyid/${itemID}`);
         const recipeItemData = await response.json();
-        console.log(recipeItemData);
         setRecipeItem(recipeItemData);
         setIsLoading(false);
       } catch (error) {
@@ -127,7 +126,7 @@ function RecipeItemEdit(props) {
             ? {...item, 
                 quantity: {
                 ...item.quantity,
-                ["$numberDecimal"]: event.target.value,
+                "$numberDecimal": event.target.value,
               }}
             : item
           );
@@ -224,7 +223,7 @@ function RecipeItemEdit(props) {
                   ? {...item, 
                     quantity: {
                     ...item.quantity,
-                    ["$numberDecimal"]: event.target.value,
+                    "$numberDecimal": event.target.value,
                   }}
                 : item
                 );                
@@ -292,10 +291,10 @@ function RecipeItemEdit(props) {
           <form onSubmit={handleSubmit}>
           <h3>Variations</h3>
           {recipeItem.variations.map((variation) => 
-            <div>
+            <div key={variation._id}>
               <b>{variation.name}</b>
               {variation.recipe.map((item) => 
-                <div>
+                <div key={item._id}>
                   <Autocomplete 
                   autoHighlight
                   disablePortal
@@ -323,13 +322,13 @@ function RecipeItemEdit(props) {
           )}
           <h3>Modifiers</h3>
           {recipeItem.modifier_lists.map((modifier_list) => 
-            <div>
+            <div key={modifier_list._id}>
               <i>{modifier_list.name}</i>
               {modifier_list.modifiers.map((modifier) =>
-                <div>
+                <div key={modifier._id}>
                   <p>{modifier.name}</p>
                   {modifier.recipe.map((item) => 
-                    <div>
+                    <div key={item._id}>
                       <Autocomplete 
                         autoHighlight
                         disablePortal

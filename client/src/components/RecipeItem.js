@@ -40,11 +40,11 @@ function RecipeItem() {
           </Button>
           <h3>Variations</h3>
           {recipeItem.variations.map((variation) => 
-            <div>
+            <div key={variation._id}>
               <b>{variation.name}</b>
               <ul>
                 {variation.recipe.map((item) => 
-                <li>{`
+                <li key={item._id}>{`
                   ${item.ingredient.name}:
                   ${parseFloat(item.quantity["$numberDecimal"])}
                   ${item.ingredient.unit.plural}
@@ -55,14 +55,14 @@ function RecipeItem() {
           )}
           <h3>Modifiers</h3>
           {recipeItem.modifier_lists.map((modifier_list) => 
-            <div>
+            <div key={modifier_list._id}>
               <i>{modifier_list.name}</i>
               {modifier_list.modifiers.map((modifier) =>
-                <div>
+                <div key={modifier._id}>
                   <p>{modifier.name}</p>
                   <ul>
                     {modifier.recipe.map((item) => 
-                      <li>{`
+                      <li key={item._id}>{`
                         ${item.ingredient.name}:
                         ${parseFloat(item.quantity["$numberDecimal"])}
                         ${item.ingredient.unit.plural}

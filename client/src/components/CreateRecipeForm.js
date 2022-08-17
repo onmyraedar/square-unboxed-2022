@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import uniqid from "uniqid";
 
 import Button from '@mui/material/Button';
@@ -25,6 +26,8 @@ function CreateRecipeForm(props) {
   const [activeStep, setActiveStep] = useState(0);
   const steps = ["Select a catalog item", "Add variation recipes", "Add modifier recipes"];
   const completed = [false, false, false];
+
+  let navigate = useNavigate();  
 
   // Updates state with catalog items from Step 1
   function handleCatalogItemChange(event, value) {
@@ -332,7 +335,7 @@ function CreateRecipeForm(props) {
       setActiveStep((prevActiveStep) => prevActiveStep - 1);
     }
   }
-
+  
   async function handleNextStep() {
     if (activeStep === 0) {
       try {
@@ -366,8 +369,7 @@ function CreateRecipeForm(props) {
       });
       console.log("Request successful!");
       console.log(response);
-      //importInventory();
-      //navigate("/inventory/list");
+      navigate("/recipe/list");
     } catch (error) {
       console.log(error);
     }   
