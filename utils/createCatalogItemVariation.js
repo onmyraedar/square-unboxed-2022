@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const CatalogItemVariation = require("../models/catalogitemvariation");
 
-function catalogItemVariationCreate(variationdetails) {
+function createCatalogItemVariation(variationdetails) {
 
   const recipe = [];
   for (const item of variationdetails.recipe) {
@@ -33,4 +33,4 @@ function catalogItemVariationCreate(variationdetails) {
   return catalogItemVariation;
 }
 
-module.exports = ("catalogItemVariationCreate", catalogItemVariationCreate);
+module.exports = ("createCatalogItemVariation", createCatalogItemVariation);

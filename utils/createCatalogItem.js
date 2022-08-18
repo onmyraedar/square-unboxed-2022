@@ -1,7 +1,7 @@
 const { default: mongoose } = require("mongoose");
 const CatalogItem = require("../models/catalogitem");
 
-function catalogItemCreate(itemdetails, dbVariations) {
+function createCatalogItem(itemdetails, dbVariations) {
 
   const dbModifierLists = [];
   
@@ -73,4 +73,4 @@ function catalogItemCreate(itemdetails, dbVariations) {
   return catalogItem;
 }
 
-module.exports = ("catalogItemCreate", catalogItemCreate);
+module.exports = ("createCatalogItem", createCatalogItem);
