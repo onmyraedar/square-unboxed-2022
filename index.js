@@ -172,84 +172,19 @@ app.post("/webhook", async (req, res, next) => {
        case "terminal.checkout.updated":
            const paymentStatus = event.data.object.checkout.status;
            if (paymentStatus === "COMPLETED") {
-                
-                const step1Order = new Order(
-                    {
-                        terminal_event_type: event.type,
-                        terminal_event_id: event.event_id,
-                        message: paymentStatus,
-                    }
-                );
-            
-                step1Order.save(function (error) {
-                    if (error) {
-                        console.log("There was an error. :(");
-                        return next(error);
-                    } else {
-                        console.log("There was no error! :)");
-                    }
-                    return;
-                });
 
                 const orderId = event.data.object.checkout.order_id;
 
-                const step2Order = new Order(
-                    {
-                        terminal_event_type: event.type,
-                        terminal_event_id: event.event_id,
-                        message: orderId,
-                    }
-                );
-            
-                step2Order.save(function (error) {
-                    if (error) {
-                        console.log("There was an error. :(");
-                        return next(error);
-                    } else {
-                        console.log("There was no error! :)");
-                    }
-                    return;
-                });                
-                
-                const squareOrderDetails = retrieveSquareOrder(orderId);
+                console.log(`Order ID: ${orderId}`);
 
-                const step3Order = new Order(
-                    {
-                        terminal_event_type: event.type,
-                        terminal_event_id: event.event_id,
-                        message: squareOrderDetails.id,
-                    }
-                );
-            
-                step3Order.save(function (error) {
-                    if (error) {
-                        console.log("There was an error. :(");
-                        return next(error);
-                    } else {
-                        console.log("There was no error! :)");
-                    }
-                    return;
-                });
-                
+                const squareOrderDetails = await retrieveSquareOrder(orderId);
+
+                console.log(`Square order ID: ${squareOrderDetails.id}`);
+
                 const order = createOrder(squareOrderDetails);
 
-                const step4Order = new Order(
-                    {
-                        terminal_event_type: event.type,
-                        terminal_event_id: event.event_id,
-                        message: order.id,
-                    }
-                );     
-                
-                step4Order.save(function (error) {
-                    if (error) {
-                        console.log("There was an error. :(");
-                        return next(error);
-                    } else {
-                        console.log("There was no error! :)");
-                    }
-                    return;
-                });                
+                console.log("Order details below", order);
+             
            }
     
        default:
