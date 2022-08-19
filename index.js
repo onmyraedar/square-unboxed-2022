@@ -11,6 +11,7 @@ const createSquareOrder = require("./utils/createSquareOrder");
 const createTerminalCheckout = require("./utils/createTerminalCheckout");
 const formatOrderLineItems = require("./utils/formatOrderLineItems");
 const listCatalog = require("./utils/listCatalog");
+const retrieveSquareOrder = require("./utils/retrieveSquareOrder");
 const toObject = require("./utils/toObject");
 
 const CatalogItem = require("./models/catalogitem");
@@ -147,8 +148,8 @@ app.get("/catalogitem/find/:catalogObjectID", (req, res, next) => {
 });
 
 app.get("/order/save", (req, res, next) => {
-  const order = createOrder();
-  return res.json(order || "no order yet");
+    const order = createOrder();
+    return res.json(order || "no order yet");
 });
 
 app.post("/order/create/test", async (req, res, next) => {
@@ -160,28 +161,27 @@ app.post("/order/create/test", async (req, res, next) => {
     return res.json("Success");
   });
 
-app.post("/webhook", (req, res, next) => {
+app.post("/webhook", async (req, res, next) => {
     const event = req.body;
     console.log(event);
 
     res.sendStatus(200);
 
-    const order = new Order(
-        {
-            terminal_event_type: event.type,
-            terminal_event_id: event.event_id,
-        }
-    );
+    switch(event.type) {
 
-    order.save(function (error) {
-        if (error) {
-            console.log("There was an error. :(");
-            return next(error);
-        } else {
-            console.log("There was no error! :)");
-        }
-        return;
-    });
+       case "terminal.checkout.updated":
+           const paymentStatus = event.data.object.status;
+           if (paymentStatus === "COMPLETED") {
+                
+                const orderId = event.data.object.order_id;
+                const squareOrderDetails = retrieveSquareOrder(orderId);
+                const order = createOrder(squareOrderDetails);
+           }
+    
+       default:
+        // do nothing
+
+    }
 
 });
 
