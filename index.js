@@ -147,11 +147,6 @@ app.get("/catalogitem/find/:catalogObjectID", (req, res, next) => {
     })
 });
 
-app.get("/order/save", (req, res, next) => {
-    const order = createOrder();
-    return res.json(order || "no order yet");
-});
-
 app.post("/order/create/test", async (req, res, next) => {
     const lineItems = req.body.lineItems;
     const formattedLineItems = formatOrderLineItems(lineItems);

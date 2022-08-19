@@ -6,7 +6,7 @@ function createOrder(orderdetails) {
   
   const dbLineItems = [];
 
-  for (const lineItem of orderdetails.line_items) {
+  for (const lineItem of orderdetails.lineItems) {
 
     console.log(lineItem);
 
@@ -16,7 +16,7 @@ function createOrder(orderdetails) {
       for (const modifier of lineItem.modifiers) {
         console.log(modifier);
         dbModifiers.push({
-          catalog_object_id: modifier.catalog_object_id,
+          catalog_object_id: modifier.catalogObjectId,
           name: modifier.name,
           quantity: modifier.quantity,
         })
@@ -24,9 +24,9 @@ function createOrder(orderdetails) {
     }
 
     dbLineItems.push({
-      variation_catalog_object_id: lineItem.catalog_object_id,
+      variation_catalog_object_id: lineItem.catalogObjectId,
       name: lineItem.name,
-      variation_name: lineItem.variation_name,
+      variation_name: lineItem.variationName,
       quantity: lineItem.quantity,
       modifiers: dbModifiers,
       inventory_item_changes: [],
