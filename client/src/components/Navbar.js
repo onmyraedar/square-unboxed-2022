@@ -53,6 +53,16 @@ function Navbar() {
             View recipes
         </NavLink>  
       </div>
+      <p className="navbar-section-header">Orders</p>
+      <div className="navlink-container">
+        <NavLink
+            className={(navData) => (navData.isActive ? "active" : "link")}
+            to="/order/test"
+          >
+            <AddBoxRoundedIcon className="navbar-icon" fontSize="small"/>
+            Create test order
+        </NavLink>  
+      </div>      
     </div>
   )
 }

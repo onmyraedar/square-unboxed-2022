@@ -4,8 +4,12 @@ const express = require("express");
 const path = require("path");
 const { Client, Environment } = require("square");
 
-const catalogItemCreate = require("./utils/catalogItemCreate");
-const catalogItemVariationCreate = require("./utils/catalogItemVariationCreate");
+const createCatalogItem = require("./utils/createCatalogItem");
+const createCatalogItemVariation = require("./utils/createCatalogItemVariation");
+const createOrder = require("./utils/createOrder");
+const createSquareOrder = require("./utils/createSquareOrder");
+const createTerminalCheckout = require("./utils/createTerminalCheckout");
+const formatOrderLineItems = require("./utils/formatOrderLineItems");
 const listCatalog = require("./utils/listCatalog");
 const toObject = require("./utils/toObject");
 
@@ -51,7 +55,7 @@ app.get("/catalog/import", async (req, res) => {
     return res.json(catalogObjects.map((catalogObject) => toObject(catalogObject)));
 });
 
-app.get("/inventory/import", (req, res) => {
+app.get("/inventory/import", (req, res, next) => {
     InventoryItem.find()
         .sort([["name", "ascending"]])
         .exec(function (error, list_items) {
@@ -65,11 +69,11 @@ app.post("/recipeset/create", (req, res) => {
     const variations = [];
     const variationdetails = req.body.variations;
     for (const variationdetail of variationdetails) {
-        const variation = catalogItemVariationCreate(variationdetail);
+        const variation = createCatalogItemVariation(variationdetail);
         variations.push(variation);
     }
 
-    const catalogItem = catalogItemCreate(req.body, variations);
+    const catalogItem = createCatalogItem(req.body, variations);
     
     return res.json("Recipe successfully saved");
 });
@@ -90,7 +94,7 @@ app.post("/recipeset/update", async (req, res) => {
 
 });
 
-app.post("/inventoryitem/create", (req, res) => {
+app.post("/inventoryitem/create", (req, res, next) => {
     const inventoryItem = new InventoryItem(
         {
             name: req.body.name,
@@ -109,7 +113,7 @@ app.post("/inventoryitem/create", (req, res) => {
     });
 });
 
-app.get("/catalogitem/all", (req, res) => {
+app.get("/catalogitem/all", (req, res, next) => {
     CatalogItem.find()
         .sort([["name", "ascending"]])
         .exec(function (error, list_items) {
@@ -131,7 +135,7 @@ app.get("/catalogitem/findbyid/:itemID", (req, res, next) => {
     })
 });
 
-app.get("/catalogitem/find/:catalogObjectID", (req, res) => {
+app.get("/catalogitem/find/:catalogObjectID", (req, res, next) => {
     CatalogItem.findOne({
         catalog_object_id: req.params.catalogObjectID
     })
@@ -142,7 +146,21 @@ app.get("/catalogitem/find/:catalogObjectID", (req, res) => {
     })
 });
 
-app.post("/webhook", (req, res) => {
+app.get("/order/save", (req, res, next) => {
+  const order = createOrder();
+  return res.json(order || "no order yet");
+});
+
+app.post("/order/create/test", async (req, res, next) => {
+    const lineItems = req.body.lineItems;
+    const formattedLineItems = formatOrderLineItems(lineItems);
+    const order = await createSquareOrder(client, formattedLineItems);
+    const terminalCheckout = await createTerminalCheckout(client, order);
+    console.log(terminalCheckout);
+    return res.json("Success");
+  });
+
+app.post("/webhook", (req, res, next) => {
     const event = req.body;
     console.log(event);
 
@@ -166,6 +184,11 @@ app.post("/webhook", (req, res) => {
     });
 
 });
+
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send("Sorry, something went wrong.");
+  })
 
 // Send back index.html for any request
 // that does not match the above
