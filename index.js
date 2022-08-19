@@ -181,7 +181,7 @@ app.post("/webhook", async (req, res, next) => {
                     }
                 );
             
-                order.save(function (error) {
+                step1Order.save(function (error) {
                     if (error) {
                         console.log("There was an error. :(");
                         return next(error);
@@ -201,7 +201,7 @@ app.post("/webhook", async (req, res, next) => {
                     }
                 );
             
-                order.save(function (error) {
+                step2Order.save(function (error) {
                     if (error) {
                         console.log("There was an error. :(");
                         return next(error);
@@ -221,7 +221,7 @@ app.post("/webhook", async (req, res, next) => {
                     }
                 );
             
-                order.save(function (error) {
+                step3Order.save(function (error) {
                     if (error) {
                         console.log("There was an error. :(");
                         return next(error);
@@ -239,7 +239,17 @@ app.post("/webhook", async (req, res, next) => {
                         terminal_event_id: event.event_id,
                         message: order.id,
                     }
-                );                
+                );     
+                
+                step4Order.save(function (error) {
+                    if (error) {
+                        console.log("There was an error. :(");
+                        return next(error);
+                    } else {
+                        console.log("There was no error! :)");
+                    }
+                    return;
+                });                
            }
     
        default:
