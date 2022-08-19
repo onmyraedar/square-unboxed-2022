@@ -62,7 +62,16 @@ function Navbar() {
             <AddBoxRoundedIcon className="navbar-icon" fontSize="small"/>
             Create test order
         </NavLink>  
-      </div>      
+      </div> 
+      <div className="navlink-container">
+        <NavLink
+            className={(navData) => (navData.isActive ? "active" : "link")}
+            to="/order/list"
+          >
+            <SearchRoundedIcon className="navbar-icon" fontSize="small"/>
+            View orders
+        </NavLink>  
+      </div>           
     </div>
   )
 }

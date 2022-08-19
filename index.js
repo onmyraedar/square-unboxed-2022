@@ -147,6 +147,15 @@ app.get("/catalogitem/find/:catalogObjectID", (req, res, next) => {
     })
 });
 
+app.get("/order/all", (req, res, next) => {
+    Order.find()
+        .sort({_id: -1})
+        .exec(function (error, list_orders) {
+            if (error) { return next(error); }
+            return res.json(list_orders);
+        })
+});
+
 app.post("/order/create/test", async (req, res, next) => {
     const lineItems = req.body.lineItems;
     const formattedLineItems = formatOrderLineItems(lineItems);

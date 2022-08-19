@@ -5,6 +5,7 @@ import CreateRecipeForm from "./components/CreateRecipeForm";
 import Header from "./components/Header";
 import InventoryList from "./components/InventoryList";
 import Navbar from "./components/Navbar";
+import OrderList from "./components/OrderList";
 import OrderTest from "./components/OrderTest";
 import RecipeItem from "./components/RecipeItem";
 import RecipeItemEdit from "./components/RecipeItemEdit";
@@ -66,6 +67,7 @@ function App() {
             <Route path="/inventory/create" element={<CreateInventoryItemForm importInventory={importInventory}/>} />
             <Route path="/inventory/list" element={<InventoryList inventory={inventory}/>} />
             <Route path="/order/test" element={<OrderTest catalog={catalog}/>} />
+            <Route path="/order/list" element={<OrderList />} />
           </Routes>
         </div>
       </div>
