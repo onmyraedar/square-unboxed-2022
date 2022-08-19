@@ -170,7 +170,7 @@ app.post("/webhook", async (req, res, next) => {
     switch(event.type) {
 
        case "terminal.checkout.updated":
-           const paymentStatus = event.data.object.status;
+           const paymentStatus = event.data.object.checkout.status;
            if (paymentStatus === "COMPLETED") {
                 
                 const step1Order = new Order(
@@ -191,7 +191,7 @@ app.post("/webhook", async (req, res, next) => {
                     return;
                 });
 
-                const orderId = event.data.object.order_id;
+                const orderId = event.data.object.checkout.order_id;
 
                 const step2Order = new Order(
                     {
