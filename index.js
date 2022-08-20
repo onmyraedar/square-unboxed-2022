@@ -10,6 +10,7 @@ const createOrder = require("./utils/createOrder");
 const createSquareOrder = require("./utils/createSquareOrder");
 const createTerminalCheckout = require("./utils/createTerminalCheckout");
 const formatOrderLineItems = require("./utils/formatOrderLineItems");
+const getDeductionQuantity = require("./utils/getDeductionQuantity");
 const listCatalog = require("./utils/listCatalog");
 const retrieveSquareOrder = require("./utils/retrieveSquareOrder");
 const toObject = require("./utils/toObject");
@@ -17,6 +18,7 @@ const toObject = require("./utils/toObject");
 const CatalogItem = require("./models/catalogitem");
 const CatalogItemVariation = require("./models/catalogitemvariation");
 const InventoryItem = require("./models/inventoryitem");
+const InventoryItemChange = require("./models/inventoryitemchange");
 const Order = require("./models/order");
 
 const app = express();
@@ -145,6 +147,11 @@ app.get("/catalogitem/find/:catalogObjectID", (req, res, next) => {
         console.log(catalog_item);
         return res.json(catalog_item);
     })
+});
+
+app.get("/order/deductions", async (req, res, next) => {
+    const squareOrderDetails = await retrieveSquareOrder(client, "hYDLCM0aSqa9RCcGit2egI2ouaB");
+    const order = createOrder(squareOrderDetails);
 });
 
 app.get("/order/all", (req, res, next) => {

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
@@ -27,6 +28,8 @@ function OrderTest(props) {
     lineItems: [],
     total: "",
   });
+
+  let navigate = useNavigate();
 
   function getLineItemDetails(item) {
     const lineItemVariations = [];
@@ -193,6 +196,7 @@ function OrderTest(props) {
       });
       console.log("Request successful!");
       console.log(response);
+      navigate("/order/list");
     } catch (error) {
       console.log(error);
     }       
