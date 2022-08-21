@@ -31,13 +31,15 @@ async function createOrder(orderdetails) {
 
     const catalogItemVariation = await CatalogItemVariation.findOne({
       catalog_object_id: lineItem.catalogObjectId
-    })
+    });
+
+    console.log(catalogItemVariation);
 
     const dbInventoryItemChanges = [];
 
     if (catalogItemVariation) {
       const catalogItem = await CatalogItem.findOne(
-        {variation: { $in: catalogItemVariation._id }})
+        {variations: { $in: catalogItemVariation._id }})
       .populate({path: "variations",
         populate: { path: "recipe.ingredient" }
       })
@@ -52,7 +54,7 @@ async function createOrder(orderdetails) {
 
             const quantityInStock = parseFloat(item.ingredient.quantity_in_stock.toString());
             const quantityBefore = quantityInStock;
-            const quantityAfter = quantityInStock - parseFloat(deductionQuantity);  
+            const quantityAfter = quantityInStock - deductionQuantity;  
             
             const inventoryItemChange = new InventoryItemChange({
               type: "DEDUCTION",
@@ -85,7 +87,7 @@ async function createOrder(orderdetails) {
                 )
                 const quantityInStock = parseFloat(item.ingredient.quantity_in_stock.toString());
                 const quantityBefore = quantityInStock;
-                const quantityAfter = quantityInStock - parseFloat(deductionQuantity);  
+                const quantityAfter = quantityInStock - deductionQuantity;  
   
                 const inventoryItemChange = new InventoryItemChange({
                   type: "DEDUCTION",
