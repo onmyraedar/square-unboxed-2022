@@ -22,6 +22,13 @@ function OrderView(props) {
     return modifierNames.join(", ");
   }
 
+  function formatOrderDateTime(order) {
+    const createdAt = new Date(Date.parse(order.created_at));
+    const creationDate = createdAt.toLocaleDateString();
+    const creationTime = createdAt.toLocaleTimeString();
+    return `${creationDate} ${creationTime}`;
+  }
+
   function toggleDetails() {
     setDetailsOpen((detailsOpen) => !detailsOpen);
   }
@@ -38,7 +45,7 @@ function OrderView(props) {
           </IconButton>
         </TableCell>        
         <TableCell component="th" scope="row">
-            {`Order created at #${order.created_at.date} ${order.created_at.time}`}
+            {`Order created at ${formatOrderDateTime(order)}`}
           </TableCell>
       </TableRow>
       <TableRow>

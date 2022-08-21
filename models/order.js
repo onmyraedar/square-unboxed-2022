@@ -4,10 +4,7 @@ const Schema = mongoose.Schema;
 
 const OrderSchema = new Schema({
     order_id: { type: String, required: true },
-    created_at: {
-        date: { type: String, required: true },
-        time: { type: String, required: true },
-    },
+    created_at: { type: String, required: true },
     line_items: [{
         variation_catalog_object_id: { type: String, required: true },
         name: { type: String, required: true },
