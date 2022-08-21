@@ -175,6 +175,15 @@ app.post("/inventoryitemchange/create", async (req, res) => {
 
 });
 
+app.get("/inventoryitemchange/findbyinventoryitem/:itemID", (req, res, next) => {
+    InventoryItemChange.find({ inventory_item: req.params.itemID })
+        .sort({_id: -1})
+        .exec(function (error, list_changes) {
+            if (error) { return next(error); }
+            return res.json(list_changes);
+        })
+});
+
 app.get("/catalogitem/all", (req, res, next) => {
     CatalogItem.find()
         .sort([["name", "ascending"]])
