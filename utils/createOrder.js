@@ -85,7 +85,7 @@ async function createOrder(orderdetails) {
                 inventory_item: item.ingredient._id,
                 order: orderdetails.id,
                 line_item: lineItem.catalogObjectId,
-                reason: `${lineItemModifier.name}`,
+                reason: `Modifier: ${lineItemModifier.name}`,
                 quantity: deductionQuantity,
               });
               inventoryItemChange.save(function (error) {

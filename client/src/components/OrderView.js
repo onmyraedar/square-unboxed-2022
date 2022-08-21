@@ -14,6 +14,14 @@ function OrderView(props) {
   const { order } = props;
   const [detailsOpen, setDetailsOpen] = useState(false);
 
+  function formatModifierNames(modifiers) {
+    const modifierNames = [];
+    for (const modifier of modifiers) {
+      modifierNames.push(modifier.name);
+    }
+    return modifierNames.join(", ");
+  }
+
   function toggleDetails() {
     setDetailsOpen((detailsOpen) => !detailsOpen);
   }
@@ -37,30 +45,43 @@ function OrderView(props) {
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={2}>
           <Collapse in={detailsOpen} timeout="auto" unmountOnExit>
             <h3>Order details</h3>
-            <Table size="small">
+            {order.line_items.map((line_item) => 
+            <div>
+              <p>{`${line_item.name} (${line_item.variation_name})`}</p>
+              <p>{`Modifiers: ${formatModifierNames(line_item.modifiers)}`}</p>
+              {line_item.inventory_item_changes.length > 0 
+              ?
+              <Table size="small">
                 <TableHead>
                   <TableRow>
-                    <TableCell>Item</TableCell>
-                    <TableCell>Modifiers</TableCell>
-                    <TableCell>Inventory item deductions</TableCell>
+                    <TableCell colSpan={3}>Inventory item deductions</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Inventory item name</TableCell>
+                    <TableCell>Quantity deducted</TableCell>
+                    <TableCell>Recipe</TableCell>                    
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {order.line_items.map((line_item) => 
+                  {line_item.inventory_item_changes.map((inventoryItemChange) => 
                   <TableRow>
-                    <TableCell component="th" scope="row">
-                      <p>{`${line_item.name} (${line_item.variation_name})`}</p>
-                    </TableCell>
+                    <TableCell>{inventoryItemChange.inventory_item.name}</TableCell>
                     <TableCell>
-                      {line_item.modifiers.map((modifier) =>
-                        <p>{modifier.name}</p>
-                      )}
+                        {`${parseFloat(inventoryItemChange.quantity["$numberDecimal"])}
+                        ${parseFloat(inventoryItemChange.quantity["$numberDecimal"]) > 1
+                          ? inventoryItemChange.inventory_item.unit.plural
+                          : inventoryItemChange.inventory_item.unit.singular
+                        }
+                        `}
                     </TableCell>
-                    <TableCell></TableCell>
+                    <TableCell>{inventoryItemChange.reason}</TableCell>
                   </TableRow>
                   )}
                 </TableBody>
-              </Table>            
+              </Table>
+              : <p>No inventory changes for this item!</p>
+              }
+            </div>)}        
           </Collapse>
         </TableCell>
       </TableRow>

@@ -157,6 +157,9 @@ app.get("/order/deductions", async (req, res, next) => {
 app.get("/order/all", (req, res, next) => {
     Order.find()
         .sort({_id: -1})
+        .populate({path: "line_items.inventory_item_changes",
+            populate: { path: "inventory_item" }
+        })      
         .exec(function (error, list_orders) {
             if (error) { return next(error); }
             return res.json(list_orders);
