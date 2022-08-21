@@ -11,7 +11,7 @@ function formatOrderLineItems(lineItems) {
       catalogObjectId: "",
     }
     const squareOrderLineItemModifiers = [];
-    for (const lineItemComponent of lineItem) {
+    for (const lineItemComponent of lineItem.components) {
       if (lineItemComponent.type === "VARIATION") {
         squareOrderLineItem.catalogObjectId = lineItemComponent.catalogObjectID;
       } else if (lineItemComponent.type === "MODIFIER") {
