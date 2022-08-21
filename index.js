@@ -128,6 +128,53 @@ app.post("/inventoryitem/update", async (req, res) => {
 
 });
 
+app.post("/inventoryitemchange/create", async (req, res) => {
+    
+    console.log(req.body);
+
+    let deductionQuantity;
+    if (req.body.type === "ADDITION") {
+        deductionQuantity = req.body.quantity_change;
+    } else if (req.body.type === "DEDUCTION") {
+        deductionQuantity = -req.body.quantity_change;
+    }
+
+    const quantityBefore = 
+        parseFloat(req.body.inventory_item.quantity_in_stock["$numberDecimal"]);
+    const quantityAfter = 
+        parseFloat(req.body.inventory_item.quantity_in_stock["$numberDecimal"]) +
+        parseFloat(deductionQuantity);
+
+    const inventoryItemChange = new InventoryItemChange({
+        type: req.body.type,
+        inventory_item: req.body.inventory_item._id,
+        reason: req.body.reason,
+        quantity: req.body.quantity_change,
+        quantity_in_stock: {
+            before: quantityBefore,
+            after: quantityAfter,
+        },
+      });    
+
+    inventoryItemChange.save(function (error) {
+    if (error) {
+        console.log(error);
+        console.log("There was an error");
+    } else {
+        console.log("There was no error");
+    }
+    });   
+
+    console.log(inventoryItemChange);
+
+    const inventoryItem = await InventoryItem.findByIdAndUpdate(
+        req.body.inventory_item._id, { $inc: { quantity_in_stock: deductionQuantity } }
+      )
+
+    return res.json("Inventory item updates successfully saved");
+
+});
+
 app.get("/catalogitem/all", (req, res, next) => {
     CatalogItem.find()
         .sort([["name", "ascending"]])

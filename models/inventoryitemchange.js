@@ -8,7 +8,11 @@ const InventoryItemChangeSchema = new Schema({
     line_item: { type: String },
     order: { type: String },
     reason: { type: String, required: true },
-    quantity: { type: Schema.Types.Decimal128, default: 0 }
+    quantity: { type: Schema.Types.Decimal128, default: 0 },
+    quantity_in_stock: {
+        before: { type: Schema.Types.Decimal128 },
+        after: { type: Schema.Types.Decimal128 },
+    }
 });
 
 module.exports = mongoose.model("InventoryItemChange", InventoryItemChangeSchema);

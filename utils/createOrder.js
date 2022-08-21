@@ -49,6 +49,11 @@ async function createOrder(orderdetails) {
             const deductionQuantity = getDeductionQuantity(
               item.ingredient.quantity_in_stock, item.quantity
             )
+
+            const quantityInStock = parseFloat(item.ingredient.quantity_in_stock.toString());
+            const quantityBefore = quantityInStock;
+            const quantityAfter = quantityInStock - parseFloat(deductionQuantity);  
+            
             const inventoryItemChange = new InventoryItemChange({
               type: "DEDUCTION",
               inventory_item: item.ingredient._id,
@@ -56,6 +61,10 @@ async function createOrder(orderdetails) {
               order: orderdetails.id,
               reason: `${lineItem.name} (${lineItem.variationName})`,
               quantity: deductionQuantity,
+              quantity_in_stock: {
+                before: quantityBefore,
+                after: quantityAfter,
+              }              
             });
             inventoryItemChange.save(function (error) {
               if (error) {
@@ -79,7 +88,11 @@ async function createOrder(orderdetails) {
             for (const item of appliedModifier.recipe) {
               const deductionQuantity = getDeductionQuantity(
                   item.ingredient.quantity_in_stock, item.quantity
-              )                                        
+              )
+              const quantityInStock = parseFloat(item.ingredient.quantity_in_stock.toString());
+              const quantityBefore = quantityInStock;
+              const quantityAfter = quantityInStock - parseFloat(deductionQuantity);  
+
               const inventoryItemChange = new InventoryItemChange({
                 type: "DEDUCTION",
                 inventory_item: item.ingredient._id,
@@ -87,6 +100,10 @@ async function createOrder(orderdetails) {
                 line_item: lineItem.catalogObjectId,
                 reason: `Modifier: ${lineItemModifier.name}`,
                 quantity: deductionQuantity,
+                quantity_in_stock: {
+                  before: quantityBefore,
+                  after: quantityAfter,
+                }
               });
               inventoryItemChange.save(function (error) {
                 if (error) {
