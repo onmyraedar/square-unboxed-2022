@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import CreateInventoryItemForm from "./components/CreateInventoryItemForm";
 import CreateRecipeForm from "./components/CreateRecipeForm";
+import CreateTestOrderForm from "./components/CreateTestOrderForm";
 import Header from "./components/Header";
 import InventoryList from "./components/InventoryList";
 import Navbar from "./components/Navbar";
 import OrderList from "./components/OrderList";
-import OrderTest from "./components/OrderTest";
 import RecipeItem from "./components/RecipeItem";
 import RecipeItemEdit from "./components/RecipeItemEdit";
 import RecipeItemList from "./components/RecipeItemList";
@@ -66,7 +66,7 @@ function App() {
             <Route path="/recipe/:itemID/edit" element={<RecipeItemEdit inventory={inventory} />} />
             <Route path="/inventory/create" element={<CreateInventoryItemForm importInventory={importInventory}/>} />
             <Route path="/inventory/list" element={<InventoryList inventory={inventory}/>} />
-            <Route path="/order/test" element={<OrderTest catalog={catalog}/>} />
+            <Route path="/order/test" element={<CreateTestOrderForm catalog={catalog}/>} />
             <Route path="/order/list" element={<OrderList />} />
           </Routes>
         </div>
