@@ -64,16 +64,9 @@ async function createOrder(orderdetails) {
               quantity_in_stock: {
                 before: quantityBefore,
                 after: quantityAfter,
-              }              
-            });
-            inventoryItemChange.save(function (error) {
-              if (error) {
-                console.log(error);
-                console.log("There was an error");
-              } else {
-                console.log("There was no error");
               }
-            });   
+            });
+            await inventoryItemChange.save();
             dbInventoryItemChanges.push(inventoryItemChange);           
           }
         }
@@ -106,14 +99,7 @@ async function createOrder(orderdetails) {
                     after: quantityAfter,
                   }
                 });
-                inventoryItemChange.save(function (error) {
-                  if (error) {
-                    console.log(error);
-                    console.log("There was an error");
-                  } else {
-                    console.log("There was no error");
-                  }
-                });     
+                await inventoryItemChange.save();   
                 dbInventoryItemChanges.push(inventoryItemChange);           
               }
             }        

@@ -254,7 +254,7 @@ app.post("/webhook", async (req, res, next) => {
 
                 console.log(`Square order ID: ${squareOrderDetails.id}`);
 
-                const order = createOrder(squareOrderDetails);
+                const order = await createOrder(squareOrderDetails);
 
                 console.log("Order details below", order);
              
