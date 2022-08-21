@@ -116,6 +116,18 @@ app.post("/inventoryitem/create", (req, res, next) => {
     });
 });
 
+app.post("/inventoryitem/update", async (req, res) => {
+    const inventoryItem = await InventoryItem.findById(req.body._id)
+
+    inventoryItem.name = req.body.name;
+    inventoryItem.unit = req.body.unit;
+
+    await inventoryItem.save();
+
+    return res.json("Inventory item updates successfully saved");
+
+});
+
 app.get("/catalogitem/all", (req, res, next) => {
     CatalogItem.find()
         .sort([["name", "ascending"]])
