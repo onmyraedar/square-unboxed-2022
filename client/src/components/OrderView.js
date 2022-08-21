@@ -38,7 +38,7 @@ function OrderView(props) {
           </IconButton>
         </TableCell>        
         <TableCell component="th" scope="row">
-            {`Order #${order.order_id}`}
+            {`Order created at #${order.created_at.date} ${order.created_at.time}`}
           </TableCell>
       </TableRow>
       <TableRow>

@@ -120,9 +120,18 @@ async function createOrder(orderdetails) {
       inventory_item_changes: dbInventoryItemChanges,
     })
   }
+
+  // Parsing Square's RFC 3339 timestamp
+  const createdAt = new Date(Date.parse(orderDetails.createdAt));
+  const creationDate = createdAt.toLocaleDateString();
+  const creationTime = createdAt.toLocaleTimeString();
   
   const order = new Order({
     order_id: orderdetails.id,
+    created_at: {
+      date: creationDate,
+      time: creationTime,
+    },
     line_items: dbLineItems,
   })
 
