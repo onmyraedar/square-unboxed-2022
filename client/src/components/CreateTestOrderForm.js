@@ -16,7 +16,7 @@ import Stack from '@mui/material/Stack';
 
 import OrderSummary from "./OrderSummary";
 
-function OrderTest(props) {
+function CreateTestOrderForm(props) {
   const { catalog } = props;
   
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -31,6 +31,7 @@ function OrderTest(props) {
     lineItems: [],
     total: "",
   });
+  const [isOrderProcessing, setIsOrderProcessing] = useState(false);
 
   let navigate = useNavigate();
 
@@ -208,6 +209,7 @@ function OrderTest(props) {
 
   async function handleCompleteOrder() {
     try {
+      setIsOrderProcessing(true);
       const response = await fetch("/order/create/test", {
         method: "POST",
         headers: {
@@ -216,7 +218,6 @@ function OrderTest(props) {
         body: JSON.stringify(order)
       });
       console.log("Request successful!");
-      console.log(response);
       navigate("/order/list");
     } catch (error) {
       console.log(error);
@@ -289,10 +290,12 @@ function OrderTest(props) {
       <OrderSummary 
         handleCompleteOrder={handleCompleteOrder}
         handleDeleteLineItem={handleDeleteLineItem}
-        order={order}/>
+        isOrderProcessing={isOrderProcessing}
+        order={order}
+      />
       }
     </div>
   );
 }
 
-export default OrderTest;
+export default CreateTestOrderForm;
