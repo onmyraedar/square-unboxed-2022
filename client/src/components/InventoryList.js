@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import Button from '@mui/material/Button';
@@ -19,7 +19,7 @@ import TextField from '@mui/material/TextField';
 import "./InventoryList.css";
 
 function InventoryList(props) {
-  const { inventory } = props;
+  const { importInventory, inventory } = props;
 
   const [editInProgress, setEditInProgress] = useState(false);
   const [itemToEdit, setItemToEdit] = useState({});
@@ -85,6 +85,7 @@ function InventoryList(props) {
       console.log("Request successful!");
       console.log(response);
       setEditInProgress(false);
+      importInventory();
       navigate("/inventory/list");
     } catch (error) {
       console.log(error);

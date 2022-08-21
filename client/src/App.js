@@ -65,7 +65,7 @@ function App() {
             <Route path="/recipe/:itemID" element={<RecipeItem />} />
             <Route path="/recipe/:itemID/edit" element={<RecipeItemEdit inventory={inventory} />} />
             <Route path="/inventory/create" element={<CreateInventoryItemForm importInventory={importInventory}/>} />
-            <Route path="/inventory/list" element={<InventoryList inventory={inventory}/>} />
+            <Route path="/inventory/list" element={<InventoryList importInventory={importInventory} inventory={inventory}/>} />
             <Route path="/order/test" element={<CreateTestOrderForm catalog={catalog}/>} />
             <Route path="/order/list" element={<OrderList />} />
           </Routes>
