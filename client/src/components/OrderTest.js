@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import uniqid from "uniqid";
 
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
@@ -12,6 +13,8 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
+
+import OrderSummary from "./OrderSummary";
 
 function OrderTest(props) {
   const { catalog } = props;
@@ -146,17 +149,21 @@ function OrderTest(props) {
   }
 
   function handleAddLineItem() {
-    const orderLineItem = [];
+    const orderLineItemComponents = [];
     const updatedVariation = {...lineItem.selectedVariation,
       name: `${lineItem.name} (${lineItem.selectedVariation.name})`}
-    orderLineItem.push(updatedVariation);
+    orderLineItemComponents.push(updatedVariation);
     for (const modifierList of lineItem.modifierLists) {
       for (const modifier of modifierList.modifiers) {
         if (modifier.isSelected) {
-          orderLineItem.push(modifier);
+          orderLineItemComponents.push(modifier);
         }
       }
     }
+    const orderLineItem = {
+      id: uniqid(),
+      components: orderLineItemComponents,
+    };
     setOrder((order) => {
       return {
         ...order,
@@ -165,6 +172,20 @@ function OrderTest(props) {
       }
     });
     handleClose();
+  }
+
+  function handleDeleteLineItem(targetID) {
+    console.log(order.lineItems);
+    const filteredLineItems = order.lineItems.filter(
+      (orderLineItem) => orderLineItem.id !== targetID
+    );
+    setOrder((order) => {
+      return {
+        ...order,
+        lineItems: filteredLineItems,
+        total: getOrderTotal(filteredLineItems),
+      }
+    });
   }
 
   function getFormattedPrice(price) {
@@ -176,7 +197,7 @@ function OrderTest(props) {
   function getOrderTotal(lineItems) {
     let orderTotal = 0;
     for (const lineItem of lineItems) {
-      for (const lineItemComponent of lineItem) {
+      for (const lineItemComponent of lineItem.components) {
         // If the component doesn't have an associated price
         // Just add 0 to the total
         orderTotal += (parseFloat(lineItemComponent.price) || 0);
@@ -265,22 +286,10 @@ function OrderTest(props) {
         </DialogActions>
       </Dialog>}
       {order.lineItems.length > 0 &&
-      <div>
-      {order.lineItems.map((orderLineItem) => 
-        <div>
-          {orderLineItem.map((orderLineItemComponent) => 
-          <div>
-            <p>{orderLineItemComponent.name}</p>
-            <p>{orderLineItemComponent.formattedPrice}</p>
-          </div>
-          )}
-        </div>
-      )}
-      <b>{order.total}</b>
-      <Button onClick={handleCompleteOrder} variant="contained">
-          Complete Order
-      </Button>      
-      </div>
+      <OrderSummary 
+        handleCompleteOrder={handleCompleteOrder}
+        handleDeleteLineItem={handleDeleteLineItem}
+        order={order}/>
       }
     </div>
   );
