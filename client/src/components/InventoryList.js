@@ -7,8 +7,14 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import EditIcon from '@mui/icons-material/Edit';
+import ExposureIcon from '@mui/icons-material/Exposure';
+import FormControl from '@mui/material/FormControl';
+import InputAdornment from '@mui/material/InputAdornment';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
+import Select from '@mui/material/Select';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -22,7 +28,16 @@ function InventoryList(props) {
   const { importInventory, inventory } = props;
 
   const [editInProgress, setEditInProgress] = useState(false);
+  const [quantityChangeInProgress, setQuantityChangeInProgress] = useState(false);
+
   const [itemToEdit, setItemToEdit] = useState({});
+  const [quantityChangeDetails, setQuantityChangeDetails] = useState({
+    type: "ADDITION",
+    inventory_item: {},
+    quantity_change: 0,
+    quantity_change_error: false,
+    reason: "",    
+  });
 
   let navigate = useNavigate();
 
@@ -72,6 +87,51 @@ function InventoryList(props) {
     setEditInProgress(false);    
   }
 
+  // Controls the quantity change dialog
+
+  function handleClickQuantityChangeOpen(item) {
+    setQuantityChangeDetails({
+      type: "ADDITION",
+      inventory_item: item,
+      quantity_change: 0,
+      quantity_change_error: false,
+      reason: "",
+    });
+    setQuantityChangeInProgress(true);
+    console.log(item);
+  }
+
+  function handleReasonChange(event) {
+    setQuantityChangeDetails((quantityChange) => {
+      return {
+        ...quantityChange,
+        reason: event.target.value,
+      }
+    });
+  }  
+
+  function handleQuantityChange(event) {
+    setQuantityChangeDetails((quantityChange) => {
+      return {
+        ...quantityChange,
+        quantity_change: event.target.value,
+      }
+    });
+  }
+
+  function handleTypeChange(event) {
+    setQuantityChangeDetails((quantityChange) => {
+      return {
+        ...quantityChange,
+        type: event.target.value,
+      }
+    });
+  }
+
+  function handleQuantityChangeClose() {
+    setQuantityChangeInProgress(false);    
+  }
+
   async function handleSaveChanges() {
     console.log("Changes sent to server");
     try {
@@ -92,6 +152,44 @@ function InventoryList(props) {
     }     
   }
   
+  async function handleSaveQuantityChange() {
+    const quantityChange = parseFloat(quantityChangeDetails.quantity_change);
+    const quantityInStock = parseFloat(quantityChangeDetails.inventory_item.quantity_in_stock["$numberDecimal"]);
+    if (quantityChangeDetails.type === "DEDUCTION" && quantityChange > quantityInStock) {
+      console.log("change invalid");
+      setQuantityChangeDetails((quantityChange) => {
+        return {
+          ...quantityChange,
+          quantity_change_error: true,
+        }
+      });
+  } else {
+      setQuantityChangeDetails((quantityChange) => {
+        return {
+          ...quantityChange,
+          quantity_change_error: false,
+        }
+      });
+      console.log("Quantity change sent to server");
+      try {
+        const response = await fetch("/inventoryitemchange/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(quantityChangeDetails)
+        });
+        console.log("Request successful!");
+        console.log(response);
+        setQuantityChangeInProgress(false);
+        importInventory();
+        navigate("/inventory/list");      
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+
   return(
     <div>
       <h1>View inventory items</h1>
@@ -104,6 +202,7 @@ function InventoryList(props) {
             <TableRow>
               <TableCell>Name</TableCell>
               <TableCell>Quantity in stock</TableCell>
+              <TableCell />
               <TableCell />
             </TableRow>
           </TableHead>
@@ -123,13 +222,22 @@ function InventoryList(props) {
                 </TableCell>
                 <TableCell>
                   <IconButton 
-                      aria-label="edit"
+                      aria-label="make-quantity-change"
                       color="primary"
                       onClick={() => handleClickOpen(item._id)}
                     >
                       <EditIcon />
                     </IconButton>                   
-                </TableCell>
+                </TableCell>                  
+                <TableCell>
+                  <IconButton 
+                      aria-label="edit"
+                      color="primary"
+                      onClick={() => handleClickQuantityChangeOpen(item)}
+                    >
+                      <ExposureIcon />
+                    </IconButton>                   
+                </TableCell>              
               </TableRow>
             ))}
           </TableBody>
@@ -167,6 +275,77 @@ function InventoryList(props) {
           <Button onClick={handleSaveChanges}>Save Changes</Button>
         </DialogActions>
       </Dialog>}   
+      {quantityChangeInProgress &&
+        <Dialog 
+            open={quantityChangeInProgress}
+            onClose={handleQuantityChangeClose}
+            scroll="paper"
+          >
+            <DialogTitle>Manually edit inventory item quantity</DialogTitle>
+            <DialogContent> 
+              <p>Currently editing: <b>{quantityChangeDetails.inventory_item.name}</b></p>   
+              <p>Current quantity in stock: <b>
+                {`${parseFloat(quantityChangeDetails.inventory_item.quantity_in_stock["$numberDecimal"])} 
+                    ${parseFloat(quantityChangeDetails.inventory_item.quantity_in_stock["$numberDecimal"]) > 0
+                      ? quantityChangeDetails.inventory_item.unit.plural
+                      : quantityChangeDetails.inventory_item.unit.singular
+                    }
+                `}</b></p>
+            <FormControl>
+              <InputLabel id="type-select-label">Type</InputLabel>
+              <Select
+                label="Select change type"
+                labelId="type-select-label"
+                onChange={handleTypeChange}
+                value={quantityChangeDetails.type}
+              >
+                <MenuItem value="ADDITION">
+                  Addition
+                </MenuItem>
+                <MenuItem value="DEDUCTION">
+                  Deduction
+                </MenuItem>                
+              </Select>
+            </FormControl>  
+            <TextField 
+              label="Reason"
+              onChange={handleReasonChange}
+              variant="outlined" 
+              value={quantityChangeDetails.reason}
+            />
+            {quantityChangeDetails.quantity_change_error
+            ? 
+            <TextField 
+            error
+            label="Quantity to add/deduct"
+            helperText="You can't deduct more stock than you have in inventory!"
+            InputProps={{
+              endAdornment: <InputAdornment position="end">{quantityChangeDetails.inventory_item.unit.plural}</InputAdornment>,
+            }}            
+            onChange={handleQuantityChange}
+            type="number"
+            value={quantityChangeDetails.quantity_change}
+            variant="outlined"
+            />
+            : 
+            <TextField 
+            label="Quantity to add/deduct"
+            InputProps={{
+              endAdornment: <InputAdornment position="end">{quantityChangeDetails.inventory_item.unit.plural}</InputAdornment>,
+            }}            
+            onChange={handleQuantityChange}
+            type="number"
+            value={quantityChangeDetails.quantity_change}
+            variant="outlined"
+            />
+            }                      
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleQuantityChangeClose}>Close</Button>
+              <Button onClick={handleSaveQuantityChange}>Save Changes</Button>
+            </DialogActions>
+        </Dialog>
+      }
     </div>
   );
 }
