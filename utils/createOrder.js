@@ -79,45 +79,47 @@ async function createOrder(orderdetails) {
         }
       }
 
-      for (const lineItemModifier of lineItem.modifiers) {
-        for (const modifierList of catalogItem.modifier_lists) {
-          const appliedModifier = modifierList.modifiers.find(
-            (modifier) => modifier.catalog_object_id === lineItemModifier.catalogObjectId
-          )
-          if (appliedModifier) {
-            for (const item of appliedModifier.recipe) {
-              const deductionQuantity = getDeductionQuantity(
-                  item.ingredient.quantity_in_stock, item.quantity
-              )
-              const quantityInStock = parseFloat(item.ingredient.quantity_in_stock.toString());
-              const quantityBefore = quantityInStock;
-              const quantityAfter = quantityInStock - parseFloat(deductionQuantity);  
-
-              const inventoryItemChange = new InventoryItemChange({
-                type: "DEDUCTION",
-                inventory_item: item.ingredient._id,
-                order: orderdetails.id,
-                line_item: lineItem.catalogObjectId,
-                reason: `Modifier: ${lineItemModifier.name}`,
-                quantity: deductionQuantity,
-                quantity_in_stock: {
-                  before: quantityBefore,
-                  after: quantityAfter,
-                }
-              });
-              inventoryItemChange.save(function (error) {
-                if (error) {
-                  console.log(error);
-                  console.log("There was an error");
-                } else {
-                  console.log("There was no error");
-                }
-              });     
-              dbInventoryItemChanges.push(inventoryItemChange);           
-            }
-          }        
-        }
-      }      
+      if (lineItem.modifiers) {
+        for (const lineItemModifier of lineItem.modifiers) {
+          for (const modifierList of catalogItem.modifier_lists) {
+            const appliedModifier = modifierList.modifiers.find(
+              (modifier) => modifier.catalog_object_id === lineItemModifier.catalogObjectId
+            )
+            if (appliedModifier) {
+              for (const item of appliedModifier.recipe) {
+                const deductionQuantity = getDeductionQuantity(
+                    item.ingredient.quantity_in_stock, item.quantity
+                )
+                const quantityInStock = parseFloat(item.ingredient.quantity_in_stock.toString());
+                const quantityBefore = quantityInStock;
+                const quantityAfter = quantityInStock - parseFloat(deductionQuantity);  
+  
+                const inventoryItemChange = new InventoryItemChange({
+                  type: "DEDUCTION",
+                  inventory_item: item.ingredient._id,
+                  order: orderdetails.id,
+                  line_item: lineItem.catalogObjectId,
+                  reason: `Modifier: ${lineItemModifier.name}`,
+                  quantity: deductionQuantity,
+                  quantity_in_stock: {
+                    before: quantityBefore,
+                    after: quantityAfter,
+                  }
+                });
+                inventoryItemChange.save(function (error) {
+                  if (error) {
+                    console.log(error);
+                    console.log("There was an error");
+                  } else {
+                    console.log("There was no error");
+                  }
+                });     
+                dbInventoryItemChanges.push(inventoryItemChange);           
+              }
+            }        
+          }
+        }  
+      }    
     } 
 
     console.log(dbInventoryItemChanges);
