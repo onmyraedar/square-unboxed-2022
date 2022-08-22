@@ -18,6 +18,10 @@ function SelectCatalogItemStep(props) {
 
   return(
     <div>
+      <p>If you click Refresh Catalog and there are no options in the dropdown,
+        but you can see recipes on the View recipes page, that is because every
+        item in the catalog already has a recipe. Try editing an existing recipe instead.
+      </p>      
       <Autocomplete 
         autoHighlight
         disablePortal
