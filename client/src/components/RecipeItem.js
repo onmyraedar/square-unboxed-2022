@@ -33,7 +33,7 @@ function RecipeItem() {
           <Button 
             component={Link}
             to={`/recipe/${recipeItem._id}/edit`}
-            variant="outlined"
+            variant="contained"
             value={recipeItem._id}
           >
             Edit Recipe
@@ -56,10 +56,9 @@ function RecipeItem() {
           <h3>Modifiers</h3>
           {recipeItem.modifier_lists.map((modifier_list) => 
             <div key={modifier_list._id}>
-              <i>{modifier_list.name}</i>
               {modifier_list.modifiers.map((modifier) =>
                 <div key={modifier._id}>
-                  <p>{modifier.name}</p>
+                  <b>{modifier_list.name} - {modifier.name}</b>
                   <ul>
                     {modifier.recipe.map((item) => 
                       <li key={item._id}>{`

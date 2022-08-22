@@ -5,6 +5,8 @@ import Button from '@mui/material/Button';
 import InputAdornment from '@mui/material/InputAdornment';
 import TextField from "@mui/material/TextField";
 
+import "./AddModifierRecipeStep.css";
+
 function AddModifierRecipeStep(props) {
   const { 
     activeCatalogItem,
@@ -67,7 +69,7 @@ function AddModifierRecipeStep(props) {
             <div key={modifier.catalogObjectID}>
               <p>{modifier.name}</p>
               {modifier.recipe.map((ingredient) => 
-                  <div key={ingredient.ingredientID}>
+                  <div className="modifier-ingredient" key={ingredient.ingredientID}>
                     <Autocomplete 
                       autoHighlight
                       disablePortal
@@ -75,7 +77,8 @@ function AddModifierRecipeStep(props) {
                       isOptionEqualToValue={(option, value) => option.inventoryItemID === value.inventoryItemID}
                       onChange={handleModifierInventoryItemChange}
                       options={inventoryItemOptions}
-                      renderInput={(params) => <TextField {...params} label="Choose an inventory item" />}
+                      renderInput={(params) => <TextField {...params} label="Choose an inventory item" variant="standard"/>}
+                      style={{minWidth: 400}}
                       value={getInventoryItem(ingredient.inventoryItemID)}
                     />
                     <TextField 
@@ -86,7 +89,7 @@ function AddModifierRecipeStep(props) {
                       label="Enter a quantity"
                       onChange={handleModifierQuantityChange}
                       type="number"
-                      variant="outlined"
+                      variant="standard"
                       value={getQuantity(modifier.catalogObjectID, ingredient.ingredientID)}
                     />                    
                   </div>

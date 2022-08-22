@@ -6,6 +6,8 @@ import Button from '@mui/material/Button';
 import InputAdornment from '@mui/material/InputAdornment';
 import TextField from "@mui/material/TextField";
 
+import "./RecipeItemEdit.css";
+
 function RecipeItemEdit(props) {
   const [isLoading, setIsLoading] = useState(true);
   const [recipeItem, setRecipeItem] = useState({});
@@ -294,7 +296,7 @@ function RecipeItemEdit(props) {
             <div key={variation._id}>
               <b>{variation.name}</b>
               {variation.recipe.map((item) => 
-                <div key={item._id}>
+                <div className="ingredient-edit-mode" key={item._id}>
                   <Autocomplete 
                   autoHighlight
                   disablePortal
@@ -302,7 +304,8 @@ function RecipeItemEdit(props) {
                   isOptionEqualToValue={(option, value) => option.inventoryItemID === value.inventoryItemID}
                   onChange={handleInventoryItemChange}
                   options={inventoryItemOptions}
-                  renderInput={(params) => <TextField {...params} label="Choose an inventory item" />}
+                  renderInput={(params) => <TextField {...params} label="Choose an inventory item" variant="standard" />}
+                  style={{minWidth: 400}}
                   value={getInventoryItem(item.ingredient._id)}
                 />
                 <TextField 
@@ -313,7 +316,7 @@ function RecipeItemEdit(props) {
                   label="Enter a quantity"
                   onChange={handleQuantityChange}
                   type="number"
-                  variant="outlined"
+                  variant="standard"
                   value={getQuantity(variation.catalog_object_id, item._id)}
                 />     
                 </div>                           
@@ -323,12 +326,11 @@ function RecipeItemEdit(props) {
           <h3>Modifiers</h3>
           {recipeItem.modifier_lists.map((modifier_list) => 
             <div key={modifier_list._id}>
-              <i>{modifier_list.name}</i>
               {modifier_list.modifiers.map((modifier) =>
                 <div key={modifier._id}>
-                  <p>{modifier.name}</p>
-                  {modifier.recipe.map((item) => 
-                    <div key={item._id}>
+                  <b>{modifier_list.name} - {modifier.name}</b>
+                  {modifier.recipe.length > 0 && modifier.recipe.map((item) => 
+                    <div className="ingredient-edit-mode" key={item._id}>
                       <Autocomplete 
                         autoHighlight
                         disablePortal
@@ -336,7 +338,8 @@ function RecipeItemEdit(props) {
                         isOptionEqualToValue={(option, value) => option.inventoryItemID === value.inventoryItemID}
                         onChange={handleModifierInventoryItemChange}
                         options={inventoryItemOptions}
-                        renderInput={(params) => <TextField {...params} label="Choose an inventory item" />}
+                        renderInput={(params) => <TextField {...params} label="Choose an inventory item" variant="standard" />}
+                        style={{minWidth: 400}}
                         value={getInventoryItem(item.ingredient._id)}
                       />
                       <TextField 
@@ -347,11 +350,14 @@ function RecipeItemEdit(props) {
                         label="Enter a quantity"
                         onChange={handleModifierQuantityChange}
                         type="number"
-                        variant="outlined"
+                        variant="standard"
                         value={getModifierQuantity(modifier.catalog_object_id, item._id)}
                       />                       
                     </div>
-                  )}                    
+                  )}
+                  {!modifier.recipe.length > 0 && 
+                  <p>No ingredients to show for this modifier.</p>
+                  }                
                 </div> 
               )}
             </div>

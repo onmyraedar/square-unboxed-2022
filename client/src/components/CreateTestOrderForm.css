@@ -1,0 +1,8 @@
+.order-total-warning {
+  margin-bottom: 20px;
+}
+
+.test-order-content {
+  display: flex;
+  justify-content: space-between;
+}

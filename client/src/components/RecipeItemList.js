@@ -23,7 +23,6 @@ function RecipeItemList() {
   return(
     <div>
       <h1>View recipes</h1>
-      <p>The items below already have recipes in the database.</p>
       <p>Click on an item to view and edit its recipes.</p>
       {recipeItems.map((item) => 
         <div key={item._id}>

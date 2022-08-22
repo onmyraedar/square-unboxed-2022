@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 
+import Button from '@mui/material/Button';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -7,6 +8,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 import OrderView from "./OrderView";
 
@@ -20,6 +22,7 @@ function OrderList() {
       try {
         const response = await fetch("/order/all");
         const orderData = await response.json();
+        console.log(orderData);
         setOrders(orderData);
         setIsLoading(false);
       } catch (error) {
@@ -29,10 +32,25 @@ function OrderList() {
     getOrders();
   }, []);
 
+  async function refreshOrders() {
+    try {
+      const response = await fetch("/order/all");
+      const orderData = await response.json();
+      console.log("Orders refreshed!");
+      setOrders(orderData);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return(
     <div>
       <h1>View orders</h1>
       {!isLoading && 
+      <Fragment>
+        <Button color="secondary" onClick={refreshOrders} variant="outlined">
+          Refresh orders  <RefreshIcon />
+        </Button>        
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
@@ -46,7 +64,8 @@ function OrderList() {
               ))}
             </TableBody>
           </Table>
-        </TableContainer>      
+        </TableContainer>
+      </Fragment>  
       }
     </div>
   );

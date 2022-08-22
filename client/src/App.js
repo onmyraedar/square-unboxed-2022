@@ -59,7 +59,6 @@ function App() {
         <Navbar />
         <div className="App-content">
           <button onClick={importCatalog}>Import Catalog</button>
-          <button onClick={importInventory}>Import Inventory</button>
           <Routes>
             <Route path="/recipe/create" element={<CreateRecipeForm catalog={catalog} inventory={inventory} />} />
             <Route path="/recipe/list" element={<RecipeItemList />} />

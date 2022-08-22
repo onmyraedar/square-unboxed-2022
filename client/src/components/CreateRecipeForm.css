@@ -1,0 +1,9 @@
+.stepper-container {
+  margin: 40px 0px;
+}
+
+.create-recipe-form-btn-container {
+  margin: 30px 0px;
+  display: flex;
+  justify-content: space-between;
+}

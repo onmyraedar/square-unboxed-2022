@@ -75,8 +75,12 @@ function InventoryItemHistory() {
     { field: "reason", headerName: "Reason", width: 150 }
   ];
 
-  return(<div className="data-grid-container">
-    {!isLoading && <DataGrid rows={rows} columns={columns} />}
+  return(
+  <div>
+    <h1>Inventory item history</h1>
+    <div className="data-grid-container">
+      {!isLoading && <DataGrid rows={rows} columns={columns} />}
+    </div>
   </div>);
 }
 

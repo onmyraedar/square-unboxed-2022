@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import uniqid from "uniqid";
 
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
 import Dialog from '@mui/material/Dialog';
@@ -15,6 +17,8 @@ import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 
 import OrderSummary from "./OrderSummary";
+
+import "./CreateTestOrderForm.css";
 
 function CreateTestOrderForm(props) {
   const { catalog } = props;
@@ -228,6 +232,25 @@ function CreateTestOrderForm(props) {
   return(
     <div>
       <h1>Create test order</h1>
+      <p>Use this page to simulate a customer's order.</p>
+      <p>
+        After you complete checkout, go to the View Orders page for an 
+        itemized breakdown of your inventory deductions.
+      </p>
+      <p>
+        Go to the View Inventory Items page to see your post-order
+         inventory quantities.
+      </p>    
+      <Alert className="order-total-warning" severity="warning">
+        <AlertTitle>Warning - Please limit your total order cost to less than $25.00!</AlertTitle>
+          This application uses Square's special <code>device_id</code> values to
+          simulate Terminal API checkouts (more onthis <a href="https://developer.squareup.com/docs/devtools/sandbox/testing#terminal-checkout-test-device-ids">
+           here</a>.)
+          Using these values will only return a successful payment for 
+          <b> orders below $25.00 USD</b>.
+        </Alert>
+      <div className="test-order-content">
+      <div>         
       {catalog.items.map((item) => 
       <div key={item.id}>
         <p>{item.itemData.name}</p>
@@ -235,6 +258,18 @@ function CreateTestOrderForm(props) {
           Add item to order
         </Button>
       </div>)}
+      </div>
+      <div>
+      {order.lineItems.length > 0 &&
+      <OrderSummary 
+        handleCompleteOrder={handleCompleteOrder}
+        handleDeleteLineItem={handleDeleteLineItem}
+        isOrderProcessing={isOrderProcessing}
+        order={order}
+      />
+      }    
+      </div>  
+      </div>
       {lineItem.variations.length > 0 &&
       <Dialog 
         open={isDialogOpen}
@@ -283,17 +318,10 @@ function CreateTestOrderForm(props) {
         )}
         </DialogContent>
         <DialogActions>
+          <Button onClick={handleClose}>Close</Button>
           <Button onClick={handleAddLineItem}>Save Item</Button>
         </DialogActions>
       </Dialog>}
-      {order.lineItems.length > 0 &&
-      <OrderSummary 
-        handleCompleteOrder={handleCompleteOrder}
-        handleDeleteLineItem={handleDeleteLineItem}
-        isOrderProcessing={isOrderProcessing}
-        order={order}
-      />
-      }
     </div>
   );
 }

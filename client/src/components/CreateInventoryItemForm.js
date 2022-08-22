@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { useNavigate } from "react-router-dom";
+import "./CreateInventoryItemForm.css";
 
 function CreateInventoryItemForm(props) {
   const { importInventory } = props;
@@ -58,28 +59,23 @@ function CreateInventoryItemForm(props) {
   return(
     <div>
       <h1>Create inventory item</h1>
-      <p>When you create an inventory item, you can then add it to a recipe.</p>  
-      <p>Adding an inventory item to a recipe lets Bento deduct a preset amount
-        of that item from inventory whenever the user buys 
-        a specific catalog item ("makes the recipe").
-      </p>  
-      <p>Example:</p>
-      <ol>
-        <li>You create an inventory item called Waffle Cones.</li>
-        <li>You set up a recipe for Ice Cream Surprise, which is
-          an existing item in your Square catalog. In the recipe,
-          you specify that 1 Waffle Cone is needed for each 
-          order of Ice Cream Surprise.
-        </li>
-        <li>When a customer orders Ice Cream Surprise, Bento will
-          automatically deduct 1 Waffle Cone from your inventory!
-        </li>
-      </ol>
-      <form>
+      <p>Create an item here to begin tracking its inventory with Bento.</p> 
+        <p>
+          A singular unit refers to one item.
+          If I say "I have one ice cream <b>cone</b>,"
+          <b> cone</b> is the singular unit.
+        </p>
+        <p>
+          A plural unit refers to more than one item.
+          If I say "I have three ice cream <b>cones</b>,"
+          <b> cones</b> is the plural unit.      
+        </p>
+      <form className="create-inventory-item-form" onSubmit={createInventoryItem}>
         <TextField 
           name="name"
           label="Item name"
           onChange={handleInputChange}
+          required={true}
           value={inventoryItem.name}
           variant="outlined"
         />
@@ -88,6 +84,7 @@ function CreateInventoryItemForm(props) {
           label="Quantity in stock"
           onChange={handleInputChange}
           type="number"
+          required={true}
           value={inventoryItem.quantity_in_stock}
           variant="outlined"
         />     
@@ -95,6 +92,7 @@ function CreateInventoryItemForm(props) {
           name="singular_unit"
           label="Singular unit"
           onChange={handleInputChange}
+          required={true}
           value={inventoryItem.singular_unit}
           variant="outlined"
         />            
@@ -102,10 +100,13 @@ function CreateInventoryItemForm(props) {
           name="plural_unit"
           label="Plural unit"
           onChange={handleInputChange}
+          required={true}
           value={inventoryItem.plural_unit}
           variant="outlined"
-        />  
-        <Button onClick={createInventoryItem} type="submit" variant="outlined">Create Item</Button>
+        />
+        <div className="create-inventory-item-btn-container">
+          <Button type="submit" variant="contained">Create Item</Button>
+        </div>
       </form>
     </div>
   );

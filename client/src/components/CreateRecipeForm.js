@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import uniqid from "uniqid";
 
@@ -11,6 +11,8 @@ import AddVariationRecipeStep from "./AddVariationRecipeStep";
 import SelectCatalogItemStep from "./SelectCatalogItemStep";
 import AddModifierRecipeStep from "./AddModifierRecipeStep";
 
+import "./CreateRecipeForm.css";
+
 function CreateRecipeForm(props) {
 
   const { catalog, inventory } = props;
@@ -21,6 +23,7 @@ function CreateRecipeForm(props) {
     variations: [],
     modifierLists: [],
   });
+  const [recipeItems, setRecipeItems] = useState([]);
 
   // Controls the form stepper
   const [activeStep, setActiveStep] = useState(0);
@@ -28,6 +31,20 @@ function CreateRecipeForm(props) {
   const completed = [false, false, false];
 
   let navigate = useNavigate();  
+
+  useEffect(() => {
+    async function getRecipeItems() {
+      try {
+        const response = await fetch("/catalogitem/all");
+        const recipeItemData = await response.json();
+        console.log(recipeItemData);
+        setRecipeItems(recipeItemData);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getRecipeItems();
+  }, []);  
 
   // Updates state with catalog items from Step 1
   function handleCatalogItemChange(event, value) {
@@ -323,12 +340,15 @@ function CreateRecipeForm(props) {
 
   // Autocomplete options
 
-  const catalogItemOptions = catalog.items.map(
+  const recipeItemIDs = recipeItems.map((recipeItem) => recipeItem.catalog_object_id);
+  const filteredCatalogItems = catalog.items.filter((item) =>
+    !recipeItemIDs.includes(item.id));
+  const catalogItemOptions = filteredCatalogItems.map(
     (item) => ({ label: item.itemData.name, catalogObjectID: item.id })
-  )
+  );
   const inventoryItemOptions = inventory.map(
     (item) => ({ label: item.name, inventoryItemID: item._id })
-  )
+  );
 
   function handlePreviousStep() {
     if (activeStep > 0) {
@@ -377,6 +397,8 @@ function CreateRecipeForm(props) {
 
   return (
   <div>
+    <h1>Create recipe</h1>
+    <div className="stepper-container">
     <Stepper nonLinear activeStep={activeStep}>
       {steps.map((label, index) => (
         <Step key={label} completed={completed[index]}>
@@ -386,6 +408,7 @@ function CreateRecipeForm(props) {
         </Step>
       ))}
     </Stepper>  
+    </div>
     <form onSubmit={handleSubmit}>
       { activeStep === 0 &&
         <SelectCatalogItemStep 
@@ -416,6 +439,7 @@ function CreateRecipeForm(props) {
           inventoryItemOptions={inventoryItemOptions}
         />
       }
+      <div className="create-recipe-form-btn-container">
       <Button onClick={handlePreviousStep} variant="contained">Back</Button>
       {activeStep < steps.length - 1 && 
         <Button onClick={handleNextStep} type="button" variant="contained">Next</Button>
@@ -423,6 +447,7 @@ function CreateRecipeForm(props) {
       {activeStep === steps.length - 1 &&
         <Button type="submit" variant="contained">Submit</Button>
       }
+      </div>
     </form>
   </div>
   );

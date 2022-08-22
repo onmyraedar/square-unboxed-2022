@@ -5,6 +5,8 @@ import Button from '@mui/material/Button';
 import InputAdornment from '@mui/material/InputAdornment';
 import TextField from "@mui/material/TextField";
 
+import "./AddVariationRecipeStep.css";
+
 function AddVariationRecipeStep(props) {
   const {
     activeCatalogItem,
@@ -55,13 +57,12 @@ function AddVariationRecipeStep(props) {
 
   return(
     <div>
-      <h1>{activeCatalogItem.name}</h1> 
-      <h3>Variations</h3>
+      <h1>{activeCatalogItem.name} - Variations</h1> 
       {activeCatalogItem.variations.map((variation) => 
         <div key={variation.catalogObjectID}>
           <p>{variation.name}</p>
           {variation.recipe.map((ingredient) => 
-            <div key={ingredient.ingredientID}>
+            <div className="variation-ingredient" key={ingredient.ingredientID}>
               <Autocomplete 
                 autoHighlight
                 disablePortal
@@ -69,7 +70,8 @@ function AddVariationRecipeStep(props) {
                 isOptionEqualToValue={(option, value) => option.inventoryItemID === value.inventoryItemID}
                 onChange={handleInventoryItemChange}
                 options={inventoryItemOptions}
-                renderInput={(params) => <TextField {...params} label="Choose an inventory item" />}
+                renderInput={(params) => <TextField {...params} label="Choose an inventory item" variant="standard" />}
+                style={{minWidth: 400}}
                 value={getInventoryItem(ingredient.inventoryItemID)}
               />
               <TextField 
@@ -80,7 +82,7 @@ function AddVariationRecipeStep(props) {
                 label="Enter a quantity"
                 onChange={handleQuantityChange}
                 type="number"
-                variant="outlined"
+                variant="standard"
                 value={getQuantity(variation.catalogObjectID, ingredient.ingredientID)}
               />
             </div>

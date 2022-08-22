@@ -14,6 +14,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import Select from '@mui/material/Select';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -36,8 +37,12 @@ function InventoryList(props) {
     inventory_item: {},
     quantity_change: 0,
     quantity_change_error: false,
-    reason: "",    
+    reason: "",   
   });
+
+  useEffect(() => {
+    importInventory();
+  }, []);
 
   let navigate = useNavigate();
 
@@ -95,7 +100,7 @@ function InventoryList(props) {
       inventory_item: item,
       quantity_change: 0,
       quantity_change_error: false,
-      reason: "",
+      reason: "",   
     });
     setQuantityChangeInProgress(true);
     console.log(item);
@@ -155,7 +160,8 @@ function InventoryList(props) {
   async function handleSaveQuantityChange() {
     const quantityChange = parseFloat(quantityChangeDetails.quantity_change);
     const quantityInStock = parseFloat(quantityChangeDetails.inventory_item.quantity_in_stock["$numberDecimal"]);
-    if (quantityChangeDetails.type === "DEDUCTION" && quantityChange > quantityInStock) {
+    if ((quantityChangeDetails.type === "DEDUCTION" && quantityChange > quantityInStock) || 
+    (quantityChangeDetails.type === "ADDITION" && quantityChange < quantityInStock && quantityChange < 0)) {
       console.log("change invalid");
       setQuantityChangeDetails((quantityChange) => {
         return {
@@ -167,9 +173,10 @@ function InventoryList(props) {
       setQuantityChangeDetails((quantityChange) => {
         return {
           ...quantityChange,
-          quantity_change_error: false,
+          quantity_change_error: false,              
         }
       });
+      console.log(quantityChangeDetails);
       console.log("Quantity change sent to server");
       try {
         const response = await fetch("/inventoryitemchange/create", {
@@ -193,16 +200,22 @@ function InventoryList(props) {
   return(
     <div>
       <h1>View inventory items</h1>
+      <div className="view-item-instructions">
       <p>Here are the inventory items you are currently tracking with Bento.</p>
-      <p>If you don't see any items, create one <Link className="internal-link" to="/inventory/create">here</Link>.</p>
-      <p>Click the Refresh button to update the table with any inventory changes.</p>
+      <p>No items? Create one <Link className="internal-link" to="/inventory/create">here</Link>.</p>
+      <p>Don't see your changes? Click the Refresh Inventory button.</p>
+      <Button color="secondary" onClick={() => importInventory()} variant="outlined">
+        Refresh Inventory  <RefreshIcon />
+      </Button>
+      </div>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>
               <TableCell>Quantity in stock</TableCell>
-              <TableCell />
+              <TableCell>Edit details</TableCell>
+              <TableCell>Add/deduct quantity</TableCell>
               <TableCell />
             </TableRow>
           </TableHead>
@@ -220,7 +233,7 @@ function InventoryList(props) {
                     }
                   `}
                 </TableCell>
-                <TableCell>
+                <TableCell align="center">
                   <IconButton 
                       aria-label="make-quantity-change"
                       color="primary"
@@ -229,7 +242,7 @@ function InventoryList(props) {
                       <EditIcon />
                     </IconButton>                   
                 </TableCell>                  
-                <TableCell>
+                <TableCell align="center">
                   <IconButton 
                       aria-label="edit"
                       color="primary"
@@ -237,7 +250,12 @@ function InventoryList(props) {
                     >
                       <ExposureIcon />
                     </IconButton>                   
-                </TableCell>              
+                </TableCell> 
+                <TableCell>
+                  <Link className="internal-link" to={`/inventory/${item._id}/history`}>
+                    View history
+                  </Link>
+                </TableCell>         
               </TableRow>
             ))}
           </TableBody>
@@ -251,24 +269,28 @@ function InventoryList(props) {
       >
         <DialogTitle>Edit inventory item</DialogTitle>
         <DialogContent>
+        <p>Make changes to your item by editing the fields below.</p>
+        <div className="edit-form-name-field">
         <TextField 
           label="Name"
           onChange={handleNameChange}
           variant="outlined" 
           value={itemToEdit.name}
+          fullWidth
         />
+        </div>
         <TextField 
           label="Singular unit"
           onChange={handleSingularUnitChange}
           variant="outlined" 
           value={itemToEdit.unit.singular}
-        /> 
+        />
         <TextField 
           label="Plural unit"
           onChange={handlePluralUnitChange}
           variant="outlined" 
           value={itemToEdit.unit.plural}
-        />                 
+        />          
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Close</Button>
@@ -291,7 +313,16 @@ function InventoryList(props) {
                       : quantityChangeDetails.inventory_item.unit.singular
                     }
                 `}</b></p>
-            <FormControl>
+            <div className="quantity-change-form-reason-field">
+            <TextField 
+              label="Reason"
+              onChange={handleReasonChange}
+              variant="outlined" 
+              value={quantityChangeDetails.reason}
+              fullWidth
+            /> 
+            </div>               
+            <FormControl sx={{ minWidth: 160 }}>
               <InputLabel id="type-select-label">Type</InputLabel>
               <Select
                 label="Select change type"
@@ -307,12 +338,6 @@ function InventoryList(props) {
                 </MenuItem>                
               </Select>
             </FormControl>  
-            <TextField 
-              label="Reason"
-              onChange={handleReasonChange}
-              variant="outlined" 
-              value={quantityChangeDetails.reason}
-            />
             {quantityChangeDetails.quantity_change_error
             ? 
             <TextField 

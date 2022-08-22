@@ -1,4 +1,17 @@
+.view-item-instructions {
+  font-size: 18px;
+}
+
+.view-item-instructions a.internal-link {
+  font-size: 18px;
+}
+
 .internal-link {
   color: #fb8c00;
   text-decoration: underline;
+}
+
+.edit-form-name-field,
+.quantity-change-form-reason-field {
+  margin: 20px 0px;
 }

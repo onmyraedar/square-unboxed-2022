@@ -1,0 +1,9 @@
+.create-inventory-item-form {
+  margin: 40px 0px;
+}
+
+.create-inventory-item-btn-container {
+  margin-top: 15px;
+  display: flex;
+  justify-content: right;
+}
