@@ -58,9 +58,8 @@ function App() {
       <div className="App-container">
         <Navbar />
         <div className="App-content">
-          <button onClick={importCatalog}>Import Catalog</button>
           <Routes>
-            <Route path="/recipe/create" element={<CreateRecipeForm catalog={catalog} inventory={inventory} />} />
+            <Route path="/recipe/create" element={<CreateRecipeForm catalog={catalog} importCatalog={importCatalog} inventory={inventory} />} />
             <Route path="/recipe/list" element={<RecipeItemList />} />
             <Route path="/recipe/:itemID" element={<RecipeItem />} />
             <Route path="/recipe/:itemID/edit" element={<RecipeItemEdit inventory={inventory} />} />

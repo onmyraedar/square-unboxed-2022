@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import uniqid from "uniqid";
 
 import Button from '@mui/material/Button';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
@@ -15,7 +16,7 @@ import "./CreateRecipeForm.css";
 
 function CreateRecipeForm(props) {
 
-  const { catalog, inventory } = props;
+  const { catalog, importCatalog, inventory } = props;
 
   const [activeCatalogItem, setActiveCatalogItem] = useState({
     catalogObjectID: "",
@@ -398,6 +399,9 @@ function CreateRecipeForm(props) {
   return (
   <div>
     <h1>Create recipe</h1>
+    <Button color="secondary" onClick={() => importCatalog()} variant="outlined">
+      Refresh catalog  <RefreshIcon />
+    </Button>
     <div className="stepper-container">
     <Stepper nonLinear activeStep={activeStep}>
       {steps.map((label, index) => (
