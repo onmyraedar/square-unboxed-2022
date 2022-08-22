@@ -1,13 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 
 function RecipeItem() {
   const [isLoading, setIsLoading] = useState(true);
   const [recipeItem, setRecipeItem] = useState({});
+  const [deletionInProgress, setDeletionInProgress] = useState(false);
   
   let { itemID } = useParams();
+
+  let navigate = useNavigate();
 
   useEffect(() => {
     async function getRecipeItem() {
@@ -25,6 +32,33 @@ function RecipeItem() {
     console.log("Fetch data");
   }, [itemID]);
 
+  function handleClickOpen() {
+    setDeletionInProgress(true);
+  }
+
+  function handleClose() {
+    setDeletionInProgress(false);
+  }
+
+  async function handleDelete() {
+    console.log("Handling delete");
+    try {
+      const response = await fetch("/recipeset/delete", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(recipeItem)
+      });
+      console.log("Request successful!");
+      console.log(response);
+      setDeletionInProgress(false);
+      navigate("/recipe/list");
+    } catch (error) {
+      console.log(error);
+    }   
+  }
+
   return(
     <div>
       {!isLoading && 
@@ -38,6 +72,14 @@ function RecipeItem() {
           >
             Edit Recipe
           </Button>
+          <Button 
+            color="error"
+            onClick={handleClickOpen}
+            variant="contained"
+            value={recipeItem._id}
+          >
+            Delete Recipe
+          </Button>          
           <h3>Variations</h3>
           {recipeItem.variations.map((variation) => 
             <div key={variation._id}>
@@ -72,8 +114,25 @@ function RecipeItem() {
               )}
             </div>
           )}           
-        </div>
+        </div>    
       }
+      <Dialog 
+        open={deletionInProgress}
+        onClose={handleClose}
+        scroll="paper"
+      >
+        <DialogTitle>Deleting recipes for {recipeItem.name}</DialogTitle>
+        <DialogContent>
+        <p>If you proceed, all variation and modifier recipes for this item
+          will be deleted from the database. 
+        </p>
+        <p>Are you sure you want to proceed?</p>
+        </DialogContent>
+        <DialogActions>
+          <Button color="primary" onClick={handleClose}>Close</Button>
+          <Button color="error" onClick={handleDelete}>Delete recipes</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

@@ -97,6 +97,20 @@ app.post("/recipeset/update", async (req, res) => {
 
 });
 
+app.post("/recipeset/delete", async (req, res) => {
+
+    console.log(req.body);
+
+    for (const variation of req.body.variations) {
+        const variationQueryRes = await CatalogItemVariation.findByIdAndDelete(variation._id);
+    }
+    
+    const itemQueryRes = await CatalogItem.findByIdAndDelete(req.body._id);
+
+    return res.json("Recipe deletion successful");
+
+});
+
 app.post("/inventoryitem/create", (req, res, next) => {
     const inventoryItem = new InventoryItem(
         {
