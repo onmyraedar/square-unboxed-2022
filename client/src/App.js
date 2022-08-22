@@ -4,6 +4,7 @@ import CreateInventoryItemForm from "./components/CreateInventoryItemForm";
 import CreateRecipeForm from "./components/CreateRecipeForm";
 import CreateTestOrderForm from "./components/CreateTestOrderForm";
 import Header from "./components/Header";
+import Home from "./components/Home";
 import InventoryItemHistory from "./components/InventoryItemHistory";
 import InventoryList from "./components/InventoryList";
 import Navbar from "./components/Navbar";
@@ -34,7 +35,7 @@ function App() {
         items: catalogItems,
         modifierLists: catalogModifierLists,
       });
-      console.log(catalog);
+      console.log(catalogData);
       console.log("Catalog has been imported!");
     } catch (error) {
       console.log(error);
@@ -59,6 +60,7 @@ function App() {
         <Navbar />
         <div className="App-content">
           <Routes>
+            <Route path="/" element={<Home importCatalog={importCatalog} importInventory={importInventory} />}></Route>
             <Route path="/recipe/create" element={<CreateRecipeForm catalog={catalog} importCatalog={importCatalog} inventory={inventory} />} />
             <Route path="/recipe/list" element={<RecipeItemList />} />
             <Route path="/recipe/:itemID" element={<RecipeItem />} />
