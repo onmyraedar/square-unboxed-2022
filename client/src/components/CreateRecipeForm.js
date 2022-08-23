@@ -135,6 +135,37 @@ function CreateRecipeForm(props) {
     });
   }  
 
+  function handleDeleteIngredient(event) {
+    
+    const parsedID = event.target.value.split("-");
+    const activeVariationID = parsedID[0];
+    const activeIngredientID = parsedID[1];
+
+    console.log(parsedID, activeVariationID, activeIngredientID);
+
+    const updatedVariations = activeCatalogItem.variations.map(
+      (variation) => {
+        if (variation.catalogObjectID === activeVariationID) {
+          const updatedRecipe = variation.recipe.filter(
+            (ingredient) => ingredient.ingredientID !== activeIngredientID
+          );
+          console.log("Updated recipe:");
+          console.log(updatedRecipe);
+          return {...variation, recipe: updatedRecipe};
+        } else {
+          return variation;
+        }
+      }
+    );
+
+    setActiveCatalogItem((activeCatalogItem) => {
+      return {
+        ...activeCatalogItem,
+        variations: updatedVariations,
+      }
+    });    
+  }
+
   function handleInventoryItemChange(event, value) {
 
     const parsedID = event.target.id.split("-");
@@ -240,6 +271,53 @@ function CreateRecipeForm(props) {
         modifierLists: updatedModifierLists,
       }
     });
+
+  }
+
+  function handleDeleteModifierIngredient(event) {
+
+    const parsedID = event.target.value.split("-");
+    const activeModifierID = parsedID[0];
+    const activeIngredientID = parsedID[1];
+    
+    console.log(parsedID);
+
+    const updatedModifierLists = activeCatalogItem.modifierLists.map(
+      (modifierList) => {
+        const activeModifier = modifierList.modifiers.find(
+          (modifier) => modifier.catalogObjectID === activeModifierID
+        );
+        if (activeModifier) {
+          const updatedModifiers = modifierList.modifiers.map(
+            (modifier) => {
+              if (modifier.catalogObjectID === activeModifierID) {
+                console.log(modifier.name);
+                console.log(modifier.recipe);
+                const updatedModifierRecipe = modifier.recipe.filter(
+                  (ingredient) => ingredient.ingredientID !== activeIngredientID
+                );              
+                console.log(updatedModifierRecipe);
+                const updatedModifier = {...modifier, recipe: updatedModifierRecipe};
+                return updatedModifier;
+              } else {
+                return modifier;
+              }
+            }
+          )
+          const updatedModifierList = {...modifierList, modifiers: updatedModifiers};
+          return updatedModifierList;
+        } else {
+          return modifierList;
+        }
+      }
+    );
+
+    setActiveCatalogItem((activeCatalogItem) => {
+      return {
+        ...activeCatalogItem,
+        modifierLists: updatedModifierLists,
+      }
+    });    
 
   }
 
@@ -426,6 +504,7 @@ function CreateRecipeForm(props) {
         <AddVariationRecipeStep 
           activeCatalogItem={activeCatalogItem}
           handleAddIngredient={handleAddIngredient}
+          handleDeleteIngredient={handleDeleteIngredient}
           handleInventoryItemChange={handleInventoryItemChange}
           handleQuantityChange={handleQuantityChange}
           inventory={inventory}
@@ -437,6 +516,7 @@ function CreateRecipeForm(props) {
         <AddModifierRecipeStep 
           activeCatalogItem={activeCatalogItem}
           handleAddModifierIngredient={handleAddModifierIngredient}
+          handleDeleteModifierIngredient={handleDeleteModifierIngredient}
           handleModifierInventoryItemChange={handleModifierInventoryItemChange}
           handleModifierQuantityChange={handleModifierQuantityChange}
           inventory={inventory}

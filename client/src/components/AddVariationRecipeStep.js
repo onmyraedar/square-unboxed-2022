@@ -11,6 +11,7 @@ function AddVariationRecipeStep(props) {
   const {
     activeCatalogItem,
     handleAddIngredient,
+    handleDeleteIngredient,
     handleInventoryItemChange,
     handleQuantityChange,
     inventory,
@@ -85,6 +86,12 @@ function AddVariationRecipeStep(props) {
                 variant="standard"
                 value={getQuantity(variation.catalogObjectID, ingredient.ingredientID)}
               />
+              <Button 
+                color="error"
+                onClick={handleDeleteIngredient} 
+                value={`${variation.catalogObjectID}-${ingredient.ingredientID}`}>
+                  Delete
+              </Button>
             </div>
           )}
           <Button onClick={handleAddIngredient} variant="outlined" value={variation.catalogObjectID}>

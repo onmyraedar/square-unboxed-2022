@@ -11,6 +11,7 @@ function AddModifierRecipeStep(props) {
   const { 
     activeCatalogItem,
     handleAddModifierIngredient,
+    handleDeleteModifierIngredient,
     handleModifierInventoryItemChange,
     handleModifierQuantityChange,
     inventory,
@@ -91,7 +92,13 @@ function AddModifierRecipeStep(props) {
                       type="number"
                       variant="standard"
                       value={getQuantity(modifier.catalogObjectID, ingredient.ingredientID)}
-                    />                    
+                    />
+                    <Button 
+                      color="error"
+                      onClick={handleDeleteModifierIngredient} 
+                      value={`${modifier.catalogObjectID}-${ingredient.ingredientID}`}>
+                        Delete
+                    </Button>                                 
                   </div>
               )}
               <Button onClick={handleAddModifierIngredient} variant="outlined" value={modifier.catalogObjectID}>
