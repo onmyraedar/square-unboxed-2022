@@ -26,19 +26,7 @@ function Home(props) {
   return (
   <div>
     <h1>Get started with Bento</h1>
-    <p>
-      The following flowchart shows you the five steps of managing inventory with Bento.
-    </p>
-    <p>
-      In this tutorial, we'll go through each of the steps.
-    </p>
-    <img className="presentation-img" src={require("../assets/bento-presentation/5.jpg")} 
-    alt="Five steps for managing your inventory with Bento" />
     <h3>Before you begin, please click the following import buttons.</h3>
-    <p>If you ever need to refresh the catalog or inventory, feel free to return to these buttons.</p>
-    <Alert severity="warning">
-      Failure to import existing data might result in dropdowns with no options, empty tables, and so forth...
-    </Alert>    
     <div className="import-btn-container">
       <div className="import-catalog-btn-container">
       <Button color="secondary" onClick={initialCatalogImport}><DownloadIcon />Import Square Catalog</Button>
@@ -58,10 +46,23 @@ function Home(props) {
       </Alert>  
       } 
       </div>
-    </div>
+    </div>    
+    <p>If you ever need to refresh the catalog or inventory, feel free to return to these buttons.</p>
+    <Alert severity="warning">
+      Failure to import existing data might result in dropdowns with no options, empty tables, and so forth...
+    </Alert>    
     <h3>Now you're ready to follow the tutorial!</h3>
+    <p>
+      The following flowchart shows you the five steps of managing inventory with Bento.
+    </p>
+    <p>
+      In this tutorial, we'll go through each of the steps.
+    </p>
+    <img className="presentation-img" src={require("../assets/bento-presentation/5.jpg")} 
+    alt="Five steps for managing your inventory with Bento" />    
     <p>Inventory items are the "ingredients" of Bento's recipes, as you'll see in Step 2.</p>
     <p>That's why we create them first.</p>
+
     <img className="presentation-img" src={require("../assets/bento-presentation/9.jpg")} 
     alt="Step 1: Create inventory item" />
     <img className="presentation-img" src={require("../assets/bento-presentation/10.jpg")} 

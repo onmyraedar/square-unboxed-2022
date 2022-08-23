@@ -55,8 +55,7 @@ function AddModifierRecipeStep(props) {
 
   return(
     <div>
-      <h1>{activeCatalogItem.name}</h1>
-      <h3>Modifiers</h3>
+      <h1>{activeCatalogItem.name} - Modifiers</h1>
       {!activeCatalogItem.modifierLists.length && 
         <div>
           <p>This item has no modifiers.</p>
