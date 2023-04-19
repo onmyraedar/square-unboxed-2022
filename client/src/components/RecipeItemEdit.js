@@ -112,7 +112,7 @@ function RecipeItemEdit(props) {
         variations: updatedVariations,
       }
     });    
-  }  
+  } 
 
   function handleQuantityChange(event, value) {
 
@@ -320,7 +320,7 @@ function RecipeItemEdit(props) {
                   value={getQuantity(variation.catalog_object_id, item._id)}
                 />     
                 </div>                           
-              )}
+              )}           
             </div>
           )}
           <h3>Modifiers</h3>

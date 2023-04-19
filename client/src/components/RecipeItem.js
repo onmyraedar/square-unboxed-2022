@@ -6,11 +6,19 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import Tab from '@mui/material/Tab';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
+import TabPanel from '@mui/lab/TabPanel';
 
 function RecipeItem() {
   const [isLoading, setIsLoading] = useState(true);
   const [recipeItem, setRecipeItem] = useState({});
   const [deletionInProgress, setDeletionInProgress] = useState(false);
+  const [tabValue, setTabValue] = useState("Variation");
   
   let { itemID } = useParams();
 
@@ -79,22 +87,31 @@ function RecipeItem() {
             value={recipeItem._id}
           >
             Delete Recipe
-          </Button>          
-          <h3>Variations</h3>
-          {recipeItem.variations.map((variation) => 
+          </Button>      
+          <TabContext value={tabValue}>
+            <TabList>
+              <Tab label="Variation Recipes" value="Variation"></Tab>
+              <Tab label="Modifier Recipes" value="Modifier"></Tab>
+            </TabList>
+            <TabPanel value="Variation">
+            {recipeItem.variations.map((variation) => 
             <div key={variation._id}>
               <b>{variation.name}</b>
-              <ul>
+              <List>
                 {variation.recipe.map((item) => 
-                <li key={item._id}>{`
+                <ListItem key={item._id}>
+                  <ListItemText primary={`
                   ${item.ingredient.name}:
                   ${parseFloat(item.quantity["$numberDecimal"])}
                   ${item.ingredient.unit.plural}
-                `}</li>
+                `}/>
+                </ListItem>
                 )}
-              </ul>
+              </List>
             </div>
           )}
+            </TabPanel>
+          </TabContext>
           <h3>Modifiers</h3>
           {recipeItem.modifier_lists.map((modifier_list) => 
             <div key={modifier_list._id}>

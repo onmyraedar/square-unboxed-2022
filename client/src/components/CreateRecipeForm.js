@@ -436,7 +436,10 @@ function CreateRecipeForm(props) {
   }
   
   async function handleNextStep() {
-    if (activeStep === 0) {
+    if (activeStep === 0 && activeCatalogItem.catalogObjectID === "") {
+      console.log("You can't move on");
+      return;
+    } else if (activeStep === 0) {
       try {
         const response = await fetch(`/catalogitem/find/${activeCatalogItem.catalogObjectID}`);
         const itemData = await response.json();
